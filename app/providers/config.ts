@@ -27,7 +27,7 @@ export const holesky: Chain = {
     },
     rpcUrls: {
         default: {
-            http: ['https://l1rpc.hekla.taiko.xyz'],
+            http: ['https://1rpc.io/holesky'],
             webSocket: undefined
         }
     }

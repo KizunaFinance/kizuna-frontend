@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { useEffect, useRef, useState } from "react";
 import { useAccount, useReadContract } from "wagmi";
 import WalletConnect from "./components/walletConnect";
-import { stakeToken } from "./utils/staking";
+import { stakeToken, unstakeToken } from "./utils/staking";
 import { stakingABI } from "./abi/stakingABI";
 import { formatUnits } from "viem";
 import { config } from "./providers/config";
@@ -119,10 +119,16 @@ export default function Home() {
           <div className="flex flex-col justify-center items-center gap-2">
             <div>Staked Balances</div>
             <div>{formatUnits(stakedBalances ? stakedBalances : BigInt("0"), 18)}</div>
+            {stakedBalances && stakedBalances > 0 && <div className="text-red-500 cursor-pointer" onClick={() => {
+              unstakeToken(checked, stakedBalances, address!)
+            }}>Withdraw</div>}
           </div>
           <div className="flex flex-col justify-center items-center gap-2">
             <div>Staked Balances ETH</div>
             <div>{formatUnits(l1StakedBalances ? l1StakedBalances : BigInt("0"), 18)}</div>
+            {l1StakedBalances && l1StakedBalances > 0 && <div className="text-red-500 cursor-pointer" onClick={() => {
+              unstakeToken(checked, l1StakedBalances, address!)
+            }}>Withdraw</div>}
           </div>
         </div>
       </div>

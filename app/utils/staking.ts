@@ -75,18 +75,18 @@ export const stakeToken = async (isL1: boolean, amount: number, userAddress: Add
 };
 
 
-export const unstakeToken = async (isL1: boolean, amount: number, userAddress: Address) => {
+export const unstakeToken = async (isL1: boolean, amount: bigint, userAddress: Address) => {
     try {
         const allowance = await checkAllowance(isL1 ? l1dEthToken : dEthToken, userAddress);
-        if (allowance.data < convertToBigInt(amount, 18)) {
-            await callApprove(isL1, isL1 ? l1dEthToken : dEthToken, convertToBigInt(amount, 18));
+        if (allowance.data < amount) {
+            await callApprove(isL1, isL1 ? l1dEthToken : dEthToken, amount);
         }
         let result = await writeContract(config, {
             abi: stakingABI,
             address: isL1 ? l1StakingToken : stakingToken,
             chain: isL1 ? holesky : hekla,
             functionName: "withdraw",
-            args: [convertToBigInt(amount, 18)],
+            args: [amount],
         });
         await waitForTransaction(result);
         return {
