@@ -13,10 +13,14 @@ export default function Navbar() {
         <Link href="/">
           <Image src="/daiko-white.svg" alt="logo" width={140} height={40} />
         </Link>
-        <ul className="flex flex-row justify-center items-center gap-8 text-[#FF5D5D] font-bold mt-2 text-lg">
+        <ul className="flex flex-row justify-center items-center gap-12 text-[#FF5D5D] mt-2 text-lg">
           {NavLinks.map((link) => (
             <Link href={link.link} key={link.name}>
-              <div className="flex flex-col justify-center items-center gap-1">
+              <div
+                className={`flex flex-col justify-center items-center gap-1 ${
+                  pathname === link.link ? "font-bold" : "font-medium"
+                }`}
+              >
                 <div>{link.name}</div>
                 <div
                   className={`h-1 w-2  rounded-full ${
