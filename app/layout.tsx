@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Dosis, Inter, Josefin_Sans, Outfit, Poppins } from "next/font/google";
 import "./globals.css";
 import WagmiProviderWrapper from "./providers/wagmi";
+import Image from "next/image";
 
-
-const inter = Inter({ subsets: ["latin"] });
+const inter = Outfit({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className + " bg-slate-800"}>
         <WagmiProviderWrapper>{children}</WagmiProviderWrapper>
       </body>
     </html>
