@@ -119,9 +119,9 @@ export default function Home() {
           </Button>
         </div>
 
-        <div className="flex flex-row justify-between items-center gap-4">
+        <div className="grid grid-cols-2 justify-between items-start gap-4">
           <div className="flex flex-col justify-center items-center gap-2">
-            <div>Staked Balances</div>
+            <div>Staked on Taiko</div>
             <div>
               {formatUnits(stakedBalances ? stakedBalances : BigInt("0"), 18)}
             </div>
@@ -137,7 +137,7 @@ export default function Home() {
             )}
           </div>
           <div className="flex flex-col justify-center items-center gap-2">
-            <div>Staked Balances ETH</div>
+            <div>Staked on Ethereum</div>
             <div>
               {formatUnits(
                 l1StakedBalances ? l1StakedBalances : BigInt("0"),
