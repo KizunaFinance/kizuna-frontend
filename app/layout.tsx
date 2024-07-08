@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Dosis, Inter, Josefin_Sans, Outfit, Poppins } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import WagmiProviderWrapper from "./providers/wagmi";
-import Image from "next/image";
 
-const inter = Outfit({
+const outfit = Outfit({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
@@ -22,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className + " bg-slate-800"}>
+      <body className={outfit.className + " bg-slate-800"}>
         <WagmiProviderWrapper>{children}</WagmiProviderWrapper>
       </body>
     </html>
