@@ -32,9 +32,14 @@ export default function Home() {
     setTokenOut(a);
   }
   return (
-    <div className="flex flex-col gap-4 justify-center items-center min-h-screen text-white">
-      <div className="flex flex-col items-start justify-center gap-8 max-w-xl w-full border-4 border-[#FF5D5D] rounded-3xl shadow-md px-8 pb-10 pt-6">
-        <h1 className="text-3xl font-bold text-[#FF5D5D]">Bridge ETH</h1>
+    <div className="flex flex-col gap-4 justify-start items-center min-h-screen text-white">
+      <div className="flex flex-col items-start justify-center gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-3xl shadow-md px-8 pb-10 pt-6 mt-56">
+        <h1 className="text-3xl font-medium text-[#FF5D5D] flex flex-row justify-center place-items-end gap-2">
+          Bridge{" "}
+          <span className="font-black">
+            <Image src={"/rainbow.svg"} alt="Rainbow" width={35} height={35} />
+          </span>
+        </h1>
         <div className="flex flex-col justify-start items-start w-full">
           <div className="flex flex-col gap-1.5 justify-start items-start w-full relative">
             <div className="flex flex-col justify-start items-start gap-2 bg-slate-700 border-0 border-slate-500 rounded-lg px-6 py-4 w-full">
