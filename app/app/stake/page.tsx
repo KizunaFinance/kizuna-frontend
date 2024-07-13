@@ -19,10 +19,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { STAKING_HEKLA, STAKING_HOLESKY } from "@/app/utils/address";
 
 export default function Home() {
-  const holeskyStakingContract = "0x1c9430033560889Ac8e90819CC817404a05253a2";
-  const heklaStakingContract = "0x1c9430033560889Ac8e90819CC817404a05253a2";
   const { address, isConnected, chain } = useAccount();
 
   const balanceResult = useBalance({
@@ -30,31 +29,41 @@ export default function Home() {
     chainId: chain?.id,
   })
 
+  const heklaContractBalance = useBalance({
+    address: STAKING_HEKLA,
+    chainId: Chains[0].id,
+  })
+
+  const holeskyContractBalance = useBalance({
+    address: STAKING_HOLESKY,
+    chainId: Chains[1].id,
+  })
+
 
   const inputAmount = useRef<HTMLInputElement>(null);
   const [selectchain, setSelectchain] = useState<any>(Chains[0]);
   const {
-    data: stakedBalances,
+    data: holeskyBalance,
     isLoading: isStakedBalancesLoading,
     isError: isStakedBalancesError,
   } = useReadContract({
     abi: stakingABI,
-    address: holeskyStakingContract,
+    address: STAKING_HOLESKY,
     functionName: "stakedBalances",
-    chainId: 167009,
+    chainId: Chains[1].id,
     args: [address!],
   });
 
 
   const {
-    data: l1StakedBalances,
+    data: heklaBalance,
     isLoading: isL1StakedBalancesLoading,
     isError: isL1StakedBalancesError,
   } = useReadContract({
     abi: stakingABI,
-    address: heklaStakingContract,
+    address: STAKING_HEKLA,
     functionName: "stakedBalances",
-    chainId: 17000,
+    chainId: Chains[0].id,
     args: [address!],
   });
 
@@ -176,15 +185,15 @@ export default function Home() {
               <div>Staked on Ethereum</div>
               <div>
                 {formatUnits(
-                  l1StakedBalances ? l1StakedBalances : BigInt("0"),
+                  holeskyBalance ? holeskyBalance : BigInt("0"),
                   18
                 )}
               </div>
-              {l1StakedBalances && l1StakedBalances > 0 && (
+              {holeskyBalance && holeskyBalance > 0 && (
                 <div
                   className="text-red-500 cursor-pointer"
                   onClick={() => {
-                    unstakeToken(selectchain, l1StakedBalances, address!);
+                    unstakeToken(selectchain, holeskyBalance, address!);
                   }}
                 >
                   Withdraw
@@ -194,13 +203,13 @@ export default function Home() {
             <div className="flex flex-col justify-center items-start gap-2">
               <div>Staked on Taiko</div>
               <div>
-                {formatUnits(stakedBalances ? stakedBalances : BigInt("0"), 18)}
+                {formatUnits(heklaBalance ? heklaBalance : BigInt("0"), 18)}
               </div>
-              {stakedBalances && stakedBalances > 0 && (
+              {heklaBalance && heklaBalance > 0 && (
                 <div
                   className="text-red-500 cursor-pointer"
                   onClick={() => {
-                    unstakeToken(selectchain, stakedBalances, address!);
+                    unstakeToken(selectchain, heklaBalance, address!);
                   }}
                 >
                   Withdraw
@@ -217,11 +226,11 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-4 w-full">
           <div className="flex flex-col justify-start items-start gap-2 border-4 border-[#FF5D5D] rounded-3xl px-8  py-6">
             <h3 className=" text-xl font-medium">Ethereum</h3>
-            <h4 className="text-4xl font-bold text-[#FF5D5D]">1000 ETH</h4>
+            <h4 className="text-4xl font-bold text-[#FF5D5D]">{holeskyContractBalance.data ? formatUnits(holeskyContractBalance.data.value, 18) : 0} ETH</h4>
           </div>
           <div className="flex flex-col justify-start items-start gap-2 border-4 border-[#FF5D5D] rounded-3xl px-8  py-6">
             <h3 className=" text-xl font-medium">Taiko</h3>
-            <h4 className="text-4xl font-bold text-[#FF5D5D]">1000 ETH</h4>
+            <h4 className="text-4xl font-bold text-[#FF5D5D]">{heklaContractBalance.data ? formatUnits(heklaContractBalance.data.value, 18) : 0} ETH</h4>
           </div>
         </div>
       </div>

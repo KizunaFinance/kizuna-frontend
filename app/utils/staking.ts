@@ -8,17 +8,15 @@ import {
 import { config, hekla, holesky } from "../providers/config";
 import { stakingABI } from "../abi/stakingABI";
 import { Chain } from "@rainbow-me/rainbowkit";
+import { STAKING_HOLESKY, STAKING_HEKLA } from "./address";
 
-
-const holeskyStakingContract = "0x1c9430033560889Ac8e90819CC817404a05253a2";
-const heklaStakingContract = "0x1c9430033560889Ac8e90819CC817404a05253a2";
 
 
 export const stakeToken = async (chain: Chain, amount: number, userAddress: Address) => {
     try {
         let result = await writeContract(config, {
             abi: stakingABI,
-            address: chain.id === 17000 ? holeskyStakingContract : heklaStakingContract,
+            address: chain.id === 17000 ? STAKING_HOLESKY : STAKING_HEKLA,
             chain: chain,
             functionName: "stake",
             value: convertToBigInt(amount, 18),
@@ -53,7 +51,7 @@ export const unstakeToken = async (chain: Chain, amount: bigint, userAddress: Ad
     try {
         let result = await writeContract(config, {
             abi: stakingABI,
-            address: chain.id === 17000 ? holeskyStakingContract : heklaStakingContract,
+            address: chain.id === 17000 ? STAKING_HOLESKY : STAKING_HEKLA,
             chain: chain,
             functionName: "withdraw",
             args: [amount],

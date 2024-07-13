@@ -8,10 +8,8 @@ import {
 import { config } from "../providers/config";
 import { Chain } from "@rainbow-me/rainbowkit";
 import { BridgeAbi } from "../abi/brdigeABI";
+import { BRIDGE_HEKLA, BRIDGE_HOLESKY } from "./address";
 
-
-const holeskyBridgeContract = "0x9eEeA4611b59df614cC2F111805e21468CDFf4E3";
-const heklaBridgeContract = "0x9eEeA4611b59df614cC2F111805e21468CDFf4E3";
 
 const HEKLA_V2_TESTNET = 40274
 const HOLESKY_V2_TESTNET = 40217
@@ -20,22 +18,25 @@ const HOLESKY_V2_TESTNET = 40217
 export const bridgeToken = async (tokenIn: Chain, tokenOut: Chain, amount: string, userAddress: Address) => {
     try {
         let options: `0x${string}` = "0x00030100110100000000000000000000000000030d40"
+        console.log("args", [tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET, options, false].toString())
         let nativeFeeResult = await readContract(config, {
             abi: BridgeAbi,
-            address: tokenIn.id === 17000 ? holeskyBridgeContract : heklaBridgeContract,
+            address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
             functionName: "quote",
-            args: [tokenIn.id === 17000 ? HOLESKY_V2_TESTNET : HEKLA_V2_TESTNET, options, false],
+            args: [tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET, options, false],
         })
+
         console.log("nativeFeeResult", nativeFeeResult)
 
-        console.log("amount", convertToBigInt(Number(amount), 18))
+        console.log("amount", convertToBigInt(Number(amount), 18) + nativeFeeResult.nativeFee)
+        console.log("Bridge Args", [tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET, nativeFeeResult.nativeFee, userAddress, options].toString())
 
         let result = await writeContract(config, {
             abi: BridgeAbi,
-            address: tokenIn.id === 17000 ? holeskyBridgeContract : heklaBridgeContract,
+            address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
             chain: tokenIn,
             functionName: "send",
-            args: [tokenIn.id === 17000 ? HOLESKY_V2_TESTNET : HEKLA_V2_TESTNET, nativeFeeResult.nativeFee, userAddress, options],
+            args: [tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET, nativeFeeResult.nativeFee, userAddress, options],
             value: convertToBigInt(Number(amount), 18) + nativeFeeResult.nativeFee,
         });
         await waitForTransaction(result);

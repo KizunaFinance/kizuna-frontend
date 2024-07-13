@@ -1,8 +1,8 @@
 "use client";
-import { Chains } from "@/app/providers/config";
+import { Chains, config } from "@/app/providers/config";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -13,6 +13,7 @@ import {
 import { useAccount, useBalance } from "wagmi";
 import { formatUnits } from "viem";
 import { bridgeToken } from "@/app/utils/bridge";
+import { switchChain, getBalance } from "@wagmi/core";
 
 export default function Home() {
   const [tokenIn, setTokenIn] = useState<any>(Chains[0]);
@@ -24,30 +25,68 @@ export default function Home() {
 
   const holeskyBalanceResult = useBalance({
     address: address!,
-    chainId: Chains[0].id,
+    chainId: Chains[1].id,
   })
 
   const heklaBalanceResult = useBalance({
     address: address!,
-    chainId: Chains[1].id,
+    chainId: Chains[0].id,
   })
 
-  function handleSelectTokenChange(e: string) {
+  async function handleSelectTokenChange(e: string) {
     const chainID = parseInt(e);
     if (chainID === tokenIn.id || chainID === tokenOut.id) {
       const a = tokenIn;
       const b = tokenOut;
       setTokenIn(b);
       setTokenOut(a);
+      await _switchChain(tokenIn.id === 17000);
     }
   }
 
-  function handleExchange() {
+
+  useEffect(() => {
+    if (chain?.id === 17000) {
+      setTokenIn(Chains[1]);
+      setTokenOut(Chains[0]);
+    } else {
+      setTokenIn(Chains[0]);
+      setTokenOut(Chains[1]);
+    }
+  }, [chain]);
+
+
+
+  async function handleExchange() {
     const a = tokenIn;
     const b = tokenOut;
     setTokenIn(b);
     setTokenOut(a);
+    await _switchChain(b.id === 17000);
   }
+
+
+  const _switchChain = async (isL1: boolean) => {
+    try {
+      if (isL1) {
+        await switchChain(config, { chainId: Chains[1].id });
+      } else {
+        await switchChain(config, { chainId: Chains[0].id });
+      }
+      return {
+        success: true,
+        message: "Chain switched",
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: "Chain switch failed",
+      };
+    }
+  };
+
+
+
   return (
     <div className="flex flex-col gap-4 justify-start items-center min-h-screen text-white">
       <div className="flex flex-col items-start justify-center gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-3xl shadow-md px-8 pb-10 pt-6 mt-56">
@@ -145,6 +184,7 @@ export default function Home() {
                   </SelectContent>
                 </Select>
                 <input
+                  value={inputamountRef.current?.value}
                   type="number"
                   className="py-1.5 rounded-lg bg-transparent focus:outline-none text-right w-full text-2xl"
                   placeholder="0"
@@ -154,10 +194,13 @@ export default function Home() {
             </div>
           </div>
           <Button onClick={() => {
-            console.log(tokenIn.id, tokenOut.id)
-            bridgeToken(tokenIn, tokenOut, inputamountRef.current?.value.toString() || "0", address!)
+            if (tokenIn.id === chain?.id) {
+              bridgeToken(tokenIn, tokenOut, inputamountRef.current?.value.toString() || "0", address!)
+            } else {
+              _switchChain(tokenIn.id === 17000);
+            }
           }} className="text-black w-full text-xl py-6 font-medium bg-[#FF5D5D] hover:bg-white mt-4">
-            Send
+            {tokenIn.id === chain?.id ? "Send" : "Wrong Network"}
           </Button>
         </div>
       </div>
