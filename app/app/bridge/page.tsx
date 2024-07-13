@@ -2,7 +2,7 @@
 import { Chains } from "@/app/providers/config";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -10,10 +10,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAccount, useBalance } from "wagmi";
+import { formatUnits } from "viem";
+import { bridgeToken } from "@/app/utils/bridge";
 
 export default function Home() {
   const [tokenIn, setTokenIn] = useState<any>(Chains[0]);
   const [tokenOut, setTokenOut] = useState<any>(Chains[1]);
+
+  const { address, isConnected, chain } = useAccount();
+
+  const inputamountRef = useRef<HTMLInputElement>(null);
+
+  const holeskyBalanceResult = useBalance({
+    address: address!,
+    chainId: Chains[0].id,
+  })
+
+  const heklaBalanceResult = useBalance({
+    address: address!,
+    chainId: Chains[1].id,
+  })
 
   function handleSelectTokenChange(e: string) {
     const chainID = parseInt(e);
@@ -46,7 +63,7 @@ export default function Home() {
               <div className="flex flex-row justify-between items-center gap-2 w-full">
                 <div>From</div>
                 <div className="flex flex-row justify-center items-center gap-2 text-sm">
-                  <div>Balance: 0.0011</div>
+                  <div>Balance: {holeskyBalanceResult.data && heklaBalanceResult.data ? tokenIn.id === 17000 ? parseFloat(formatUnits(holeskyBalanceResult.data.value, 18)).toFixed(6) : parseFloat(formatUnits(heklaBalanceResult.data.value, 18)).toFixed(6) : 0}</div>
                   <button className="text-[#FF5D5D] font-bold">Max</button>
                 </div>
               </div>
@@ -61,7 +78,7 @@ export default function Home() {
                   <SelectContent>
                     {Chains.map((chain) => (
                       <SelectItem key={chain.id} value={chain.id.toString()}>
-                        <div className="flex flex-row justify-center items-center gap-1">
+                        <div className="flex flex-row justify-center items-center gap-2">
                           <Image
                             className="bg-white rounded-full p-1"
                             src={chain.iconUrl as string}
@@ -77,6 +94,7 @@ export default function Home() {
                 </Select>
                 <input
                   type="number"
+                  ref={inputamountRef}
                   className="py-1.5 rounded-lg bg-transparent focus:outline-none text-right w-full text-2xl"
                   placeholder="0.001 - 0.5"
                 />
@@ -98,7 +116,7 @@ export default function Home() {
               <div className="flex flex-row justify-between items-center gap-2 w-full">
                 <div>To</div>
                 <div className="flex flex-row justify-center items-center gap-2 text-sm">
-                  <div>Balance: 0.0011</div>
+                  <div>Balance: {holeskyBalanceResult.data && heklaBalanceResult.data ? tokenOut.id === 17000 ? parseFloat(formatUnits(holeskyBalanceResult.data.value, 18)).toFixed(6) : parseFloat(formatUnits(heklaBalanceResult.data.value, 18)).toFixed(6) : 0}</div>
                 </div>
               </div>
               <div className="flex flex-row justify-start items-center gap-2 w-full">
@@ -112,7 +130,7 @@ export default function Home() {
                   <SelectContent>
                     {Chains.map((chain) => (
                       <SelectItem key={chain.id} value={chain.id.toString()}>
-                        <div className="flex flex-row justify-center items-center gap-1">
+                        <div className="flex flex-row justify-center items-center gap-2">
                           <Image
                             className="bg-white rounded-full p-1"
                             src={chain.iconUrl as string}
@@ -135,7 +153,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <Button className="text-black w-full text-xl py-6 font-medium bg-[#FF5D5D] hover:bg-white mt-4">
+          <Button onClick={() => {
+            console.log(tokenIn.id, tokenOut.id)
+            bridgeToken(tokenIn, tokenOut, inputamountRef.current?.value.toString() || "0", address!)
+          }} className="text-black w-full text-xl py-6 font-medium bg-[#FF5D5D] hover:bg-white mt-4">
             Send
           </Button>
         </div>

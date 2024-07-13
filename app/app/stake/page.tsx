@@ -3,14 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useEffect, useRef, useState } from "react";
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount, useReadContract, useBalance } from "wagmi";
 
 import { formatUnits } from "viem";
 
-import { switchChain } from "@wagmi/core";
+import { switchChain, getBalance } from "@wagmi/core";
 import { Chains, config } from "../../providers/config";
 import { stakeToken, unstakeToken } from "../../utils/staking";
-import WalletConnect from "../../components/walletConnect";
 import { stakingABI } from "../../abi/stakingABI";
 import {
   Select,
@@ -22,12 +21,16 @@ import {
 import Image from "next/image";
 
 export default function Home() {
-  const stakingToken = "0xdfa96d5E31177F182fc95790Be712D238d0d3b83";
-  const dEthToken = "0xD3f7FF12e5aeee30e08A59392726E51DCb3Cc256";
-  const l1StakingToken = "0xB458B11562646A662AB2Ded927c2e2e8564e0201";
-  const l1dEthToken = "0xc044DfbDba4E3A6B11961ee35512F66708de5d48";
-
+  const holeskyStakingContract = "0x1c9430033560889Ac8e90819CC817404a05253a2";
+  const heklaStakingContract = "0x1c9430033560889Ac8e90819CC817404a05253a2";
   const { address, isConnected, chain } = useAccount();
+
+  const balanceResult = useBalance({
+    address: address!,
+    chainId: chain?.id,
+  })
+
+
   const inputAmount = useRef<HTMLInputElement>(null);
   const [selectchain, setSelectchain] = useState<any>(Chains[0]);
   const {
@@ -36,11 +39,12 @@ export default function Home() {
     isError: isStakedBalancesError,
   } = useReadContract({
     abi: stakingABI,
-    address: stakingToken,
+    address: holeskyStakingContract,
     functionName: "stakedBalances",
     chainId: 167009,
     args: [address!],
   });
+
 
   const {
     data: l1StakedBalances,
@@ -48,7 +52,7 @@ export default function Home() {
     isError: isL1StakedBalancesError,
   } = useReadContract({
     abi: stakingABI,
-    address: l1StakingToken,
+    address: heklaStakingContract,
     functionName: "stakedBalances",
     chainId: 17000,
     args: [address!],
@@ -57,8 +61,10 @@ export default function Home() {
   useEffect(() => {
     if (chain?.id === 17000) {
       setChecked(true);
+      setSelectchain(Chains[1]);
     } else {
       setChecked(false);
+      setSelectchain(Chains[0]);
     }
   }, [chain]);
 
@@ -86,6 +92,7 @@ export default function Home() {
     const chain = Chains.find((c) => c.id === chainID);
     if (chain) {
       setSelectchain(chain);
+      _switchChain(chain.id === 17000);
     }
   }
 
@@ -102,8 +109,12 @@ export default function Home() {
             <div className="flex flex-row justify-between items-center gap-2 w-full">
               <div></div>
               <div className="flex flex-row justify-center items-center gap-2 text-sm">
-                <div>Balance: 0.0011</div>
-                <button className="text-[#FF5D5D] font-bold">Max</button>
+                <div>Balance: {balanceResult.data ? parseFloat(formatUnits(balanceResult.data.value, balanceResult.data.decimals)).toFixed(6) : 0}</div>
+                <button onClick={() => {
+                  if (inputAmount.current && balanceResult.data) {
+                    inputAmount.current.value = formatUnits(balanceResult.data.value, balanceResult.data.decimals);
+                  }
+                }} className="text-[#FF5D5D] font-bold">Max</button>
               </div>
             </div>
             <div className="flex flex-row justify-start items-start gap-2  w-full">
@@ -142,7 +153,7 @@ export default function Home() {
           <Button
             onClick={async () => {
               const stakeResp = await stakeToken(
-                checked,
+                selectchain,
                 Number(inputAmount.current?.value),
                 address!
               );
@@ -173,7 +184,7 @@ export default function Home() {
                 <div
                   className="text-red-500 cursor-pointer"
                   onClick={() => {
-                    unstakeToken(checked, l1StakedBalances, address!);
+                    unstakeToken(selectchain, l1StakedBalances, address!);
                   }}
                 >
                   Withdraw
@@ -189,7 +200,7 @@ export default function Home() {
                 <div
                   className="text-red-500 cursor-pointer"
                   onClick={() => {
-                    unstakeToken(checked, stakedBalances, address!);
+                    unstakeToken(selectchain, stakedBalances, address!);
                   }}
                 >
                   Withdraw

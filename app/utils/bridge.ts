@@ -5,23 +5,38 @@ import {
     waitForTransactionReceipt,
     estimateGas
 } from "@wagmi/core";
-import { config, hekla, holesky } from "../providers/config";
-import { stakingABI } from "../abi/stakingABI";
+import { config } from "../providers/config";
 import { Chain } from "@rainbow-me/rainbowkit";
+import { BridgeAbi } from "../abi/brdigeABI";
 
 
-const holeskyStakingContract = "0x1c9430033560889Ac8e90819CC817404a05253a2";
-const heklaStakingContract = "0x1c9430033560889Ac8e90819CC817404a05253a2";
+const holeskyBridgeContract = "0x9eEeA4611b59df614cC2F111805e21468CDFf4E3";
+const heklaBridgeContract = "0x9eEeA4611b59df614cC2F111805e21468CDFf4E3";
+
+const HEKLA_V2_TESTNET = 40274
+const HOLESKY_V2_TESTNET = 40217
 
 
-export const stakeToken = async (chain: Chain, amount: number, userAddress: Address) => {
+export const bridgeToken = async (tokenIn: Chain, tokenOut: Chain, amount: string, userAddress: Address) => {
     try {
+        let options: `0x${string}` = "0x00030100110100000000000000000000000000030d40"
+        let nativeFeeResult = await readContract(config, {
+            abi: BridgeAbi,
+            address: tokenIn.id === 17000 ? holeskyBridgeContract : heklaBridgeContract,
+            functionName: "quote",
+            args: [tokenIn.id === 17000 ? HOLESKY_V2_TESTNET : HEKLA_V2_TESTNET, options, false],
+        })
+        console.log("nativeFeeResult", nativeFeeResult)
+
+        console.log("amount", convertToBigInt(Number(amount), 18))
+
         let result = await writeContract(config, {
-            abi: stakingABI,
-            address: chain.id === 17000 ? holeskyStakingContract : heklaStakingContract,
-            chain: chain,
-            functionName: "stake",
-            value: convertToBigInt(amount, 18),
+            abi: BridgeAbi,
+            address: tokenIn.id === 17000 ? holeskyBridgeContract : heklaBridgeContract,
+            chain: tokenIn,
+            functionName: "send",
+            args: [tokenIn.id === 17000 ? HOLESKY_V2_TESTNET : HEKLA_V2_TESTNET, nativeFeeResult.nativeFee, userAddress, options],
+            value: convertToBigInt(Number(amount), 18) + nativeFeeResult.nativeFee,
         });
         await waitForTransaction(result);
         return {
@@ -48,29 +63,6 @@ export const stakeToken = async (chain: Chain, amount: number, userAddress: Addr
 // }
 
 
-
-export const unstakeToken = async (chain: Chain, amount: bigint, userAddress: Address) => {
-    try {
-        let result = await writeContract(config, {
-            abi: stakingABI,
-            address: chain.id === 17000 ? holeskyStakingContract : heklaStakingContract,
-            chain: chain,
-            functionName: "withdraw",
-            args: [amount],
-        });
-        await waitForTransaction(result);
-        return {
-            success: true,
-            data: result,
-        };
-    } catch (e: any) {
-        console.log(e)
-        return {
-            success: false,
-            data: e,
-        }
-    }
-}
 
 const waitForTransaction = async (hash: Address) => {
     try {
