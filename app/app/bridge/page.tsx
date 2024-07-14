@@ -261,7 +261,7 @@ export default function Home() {
         </div>
       </div>
       <div className="flex flex-col items-center justify-between gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-3xl shadow-md px-8 py-10">
-        <div className="flex flex-row justify-between items-center gap-4 w-full px-12">
+        <div className="flex flex-row justify-between items-center gap-4 w-full px-8">
           <div className="flex flex-col gap-2 justify-center items-center">
             <Image
               className="bg-white rounded-full p-1 pb-1.5"
@@ -279,7 +279,7 @@ export default function Home() {
               <h5>Explorer</h5>
             </Link>
           </div>
-          <div className="flex flex-col gap-4 justify-center items-center">
+          <div className="flex flex-col gap-4 justify-center items-center pb-8">
             {TxStatus({ txStatus: "INFLIGHT" })?.name === "In Progress" ? (
               <LoaderCircleIcon
                 size={"40"}
