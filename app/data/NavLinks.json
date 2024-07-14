@@ -6,5 +6,9 @@
     {
         "name": "Stake",
         "link": "/app/stake"
+    },
+    {
+        "name": "Positions",
+        "link": "/app/positions"
     }
 ]

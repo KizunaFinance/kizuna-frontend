@@ -27,18 +27,17 @@ export default function Home() {
   const balanceResult = useBalance({
     address: address!,
     chainId: chain?.id,
-  })
+  });
 
   const heklaContractBalance = useBalance({
     address: STAKING_HEKLA,
     chainId: Chains[0].id,
-  })
+  });
 
   const holeskyContractBalance = useBalance({
     address: STAKING_HOLESKY,
     chainId: Chains[1].id,
-  })
-
+  });
 
   const inputAmount = useRef<HTMLInputElement>(null);
   const [selectchain, setSelectchain] = useState<any>(Chains[0]);
@@ -53,7 +52,6 @@ export default function Home() {
     chainId: Chains[1].id,
     args: [address!],
   });
-
 
   const {
     data: heklaBalance,
@@ -106,6 +104,7 @@ export default function Home() {
   }
 
   const [checked, setChecked] = useState(false);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-12 p-24  text-white">
       <div className="flex flex-col items-center justify-center gap-0 max-w-xl w-full border-4 border-[#FF5D5D] rounded-3xl px-8 pb-10 pt-6">
@@ -118,15 +117,33 @@ export default function Home() {
             <div className="flex flex-row justify-between items-center gap-2 w-full">
               <div></div>
               <div className="flex flex-row justify-center items-center gap-2 text-sm">
-                <div>Balance: {balanceResult.data ? parseFloat(formatUnits(balanceResult.data.value, balanceResult.data.decimals)).toFixed(6) : 0}</div>
-                <button onClick={() => {
-                  if (inputAmount.current && balanceResult.data) {
-                    inputAmount.current.value = formatUnits(balanceResult.data.value, balanceResult.data.decimals);
-                  }
-                }} className="text-[#FF5D5D] font-bold">Max</button>
+                <div>
+                  Balance:{" "}
+                  {balanceResult.data
+                    ? parseFloat(
+                        formatUnits(
+                          balanceResult.data.value,
+                          balanceResult.data.decimals
+                        )
+                      ).toFixed(6)
+                    : 0}
+                </div>
+                <button
+                  onClick={() => {
+                    if (inputAmount.current && balanceResult.data) {
+                      inputAmount.current.value = formatUnits(
+                        balanceResult.data.value,
+                        balanceResult.data.decimals
+                      );
+                    }
+                  }}
+                  className="text-[#FF5D5D] font-bold"
+                >
+                  Max
+                </button>
               </div>
             </div>
-            <div className="flex flex-row justify-start items-start gap-2  w-full">
+            <div className="flex flex-row justify-start items-start gap-2 bg-slate-700 border-0 border-slate-500 rounded-lg px-6 py-4 w-full">
               <Select
                 value={selectchain.id.toString()}
                 onValueChange={(e) => handleSelectChainChange(e)}
@@ -151,10 +168,10 @@ export default function Home() {
                   ))}
                 </SelectContent>
               </Select>
-              <Input
+              <input
                 ref={inputAmount}
                 type="number"
-                className="py-2.5 rounded-lg bg-transparent focus:outline-none text-right w-full border border-slate-500 text-2xl"
+                className="py-1.5 rounded-lg bg-transparent focus:outline-none text-right w-full text-2xl"
                 placeholder={`0.1 - 0.5ETH`}
               />
             </div>
@@ -184,10 +201,7 @@ export default function Home() {
             <div className="flex flex-col justify-center items-start gap-2">
               <div>Staked on Ethereum</div>
               <div>
-                {formatUnits(
-                  holeskyBalance ? holeskyBalance : BigInt("0"),
-                  18
-                )}
+                {formatUnits(holeskyBalance ? holeskyBalance : BigInt("0"), 18)}
               </div>
               {holeskyBalance && holeskyBalance > 0 && (
                 <div
@@ -226,11 +240,21 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-4 w-full">
           <div className="flex flex-col justify-start items-start gap-2 border-4 border-[#FF5D5D] rounded-3xl px-8  py-6">
             <h3 className=" text-xl font-medium">Ethereum</h3>
-            <h4 className="text-4xl font-bold text-[#FF5D5D]">{holeskyContractBalance.data ? formatUnits(holeskyContractBalance.data.value, 18) : 0} ETH</h4>
+            <h4 className="text-4xl font-bold text-[#FF5D5D]">
+              {holeskyContractBalance.data
+                ? formatUnits(holeskyContractBalance.data.value, 18)
+                : 0}{" "}
+              ETH
+            </h4>
           </div>
           <div className="flex flex-col justify-start items-start gap-2 border-4 border-[#FF5D5D] rounded-3xl px-8  py-6">
             <h3 className=" text-xl font-medium">Taiko</h3>
-            <h4 className="text-4xl font-bold text-[#FF5D5D]">{heklaContractBalance.data ? formatUnits(heklaContractBalance.data.value, 18) : 0} ETH</h4>
+            <h4 className="text-4xl font-bold text-[#FF5D5D]">
+              {heklaContractBalance.data
+                ? formatUnits(heklaContractBalance.data.value, 18)
+                : 0}{" "}
+              ETH
+            </h4>
           </div>
         </div>
       </div>
