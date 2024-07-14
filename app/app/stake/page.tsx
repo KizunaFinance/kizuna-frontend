@@ -41,29 +41,6 @@ export default function Home() {
 
   const inputAmount = useRef<HTMLInputElement>(null);
   const [selectchain, setSelectchain] = useState<any>(Chains[0]);
-  const {
-    data: holeskyBalance,
-    isLoading: isStakedBalancesLoading,
-    isError: isStakedBalancesError,
-  } = useReadContract({
-    abi: stakingABI,
-    address: STAKING_HOLESKY,
-    functionName: "stakedBalances",
-    chainId: Chains[1].id,
-    args: [address!],
-  });
-
-  const {
-    data: heklaBalance,
-    isLoading: isL1StakedBalancesLoading,
-    isError: isL1StakedBalancesError,
-  } = useReadContract({
-    abi: stakingABI,
-    address: STAKING_HEKLA,
-    functionName: "stakedBalances",
-    chainId: Chains[0].id,
-    args: [address!],
-  });
 
   useEffect(() => {
     if (chain?.id === 17000) {

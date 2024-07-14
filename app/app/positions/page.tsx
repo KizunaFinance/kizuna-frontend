@@ -65,44 +65,6 @@ export default function Home() {
     args: [address!],
   });
 
-  useEffect(() => {
-    if (chain?.id === 17000) {
-      setChecked(true);
-      setSelectchain(Chains[1]);
-    } else {
-      setChecked(false);
-      setSelectchain(Chains[0]);
-    }
-  }, [chain]);
-
-  const _switchChain = async (isL1: boolean) => {
-    try {
-      if (isL1) {
-        await switchChain(config, { chainId: 17000 });
-      } else {
-        await switchChain(config, { chainId: 167009 });
-      }
-      return {
-        success: true,
-        message: "Chain switched",
-      };
-    } catch (e) {
-      return {
-        success: false,
-        message: "Chain switch failed",
-      };
-    }
-  };
-
-  function handleSelectChainChange(e: string) {
-    const chainID = parseInt(e);
-    const chain = Chains.find((c) => c.id === chainID);
-    if (chain) {
-      setSelectchain(chain);
-      _switchChain(chain.id === 17000);
-    }
-  }
-
   const [checked, setChecked] = useState(false);
   return (
     <main className="flex min-h-screen flex-col items-start justify-start gap-12 p-24 pt-36 text-slate-200">

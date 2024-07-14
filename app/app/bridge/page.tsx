@@ -64,6 +64,7 @@ export default function Home() {
       setTxFailed(false);
       getTxpoolStatus(txHash);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [txHash]);
 
   const getTxpoolStatus = async (txHash: string) => {
