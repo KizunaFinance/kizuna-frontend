@@ -105,13 +105,13 @@ export default function Home() {
 
   const [checked, setChecked] = useState(false);
   return (
-    <main className="flex min-h-screen flex-col items-start justify-start gap-12 p-24 pt-36 text-white">
+    <main className="flex min-h-screen flex-col items-start justify-start gap-12 p-24 pt-36 text-slate-200">
       <div className="w-full flex flex-col items-start justify-center gap-6">
-        <h1 className="text-3xl font-bold text-[#FF5D5D]">
+        <h1 className="text-3xl font-bold text-slate-200">
           Avaliable Liquidity
         </h1>
         <div className="grid grid-cols-2 gap-4 w-full">
-          <div className="flex flex-row justify-between items-center gap-4 text-slate-800 bg-[#FF5D5D] rounded px-8 py-6">
+          <div className="flex flex-row justify-between items-center gap-4 text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6">
             <div className="flex flex-col justify-start items-start gap-1">
               <h3 className=" text-xl font-medium">Ethereum</h3>
               <h4 className="text-4xl font-bold">
@@ -121,7 +121,7 @@ export default function Home() {
                 ETH
               </h4>
             </div>
-            <div className="h-16 w-16 bg-slate-800 rounded-full flex justify-center items-center">
+            <div className="h-16 w-16 bg-slate-200 rounded-full flex justify-center items-center">
               <Image
                 src="/chains/icons/Ethereum.svg"
                 alt="Ethereum"
@@ -131,7 +131,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-row justify-between items-center gap-4 text-slate-800 bg-[#FF5D5D] rounded px-8 py-6">
+          <div className="flex flex-row justify-between items-center gap-4 text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6">
             <div className="flex flex-col justify-start items-start gap-1">
               <h3 className=" text-xl font-medium">Taiko</h3>
               <h4 className="text-4xl font-bold">
@@ -153,9 +153,9 @@ export default function Home() {
         </div>
       </div>
       <div className="w-full flex flex-col items-start justify-center gap-6">
-        <h1 className="text-3xl font-bold text-[#FF5D5D]">Your Staking</h1>
+        <h1 className="text-3xl font-bold text-slate-200">Your Staking</h1>
         <div className="grid grid-cols-2 gap-4 w-full">
-          <div className="flex flex-row justify-between items-center gap-2 text-slate-800 bg-[#FF5D5D] rounded px-8  py-6">
+          <div className="flex flex-row justify-between items-center gap-2 text-slate-800 bg-[#FF5D5D] rounded-xl px-8  py-6">
             <div className="flex flex-col gap-1">
               <h3 className=" text-xl font-medium">Ethereum</h3>
               <h4 className="text-4xl font-bold w-max">
@@ -178,7 +178,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="flex flex-row justify-between items-center gap-2 text-slate-800 bg-[#FF5D5D] rounded px-8  py-6">
+          <div className="flex flex-row justify-between items-center gap-2 text-slate-800 bg-[#FF5D5D] rounded-xl px-8  py-6">
             <div className="flex flex-col gap-1">
               <h3 className=" text-xl font-medium">Taiko</h3>
               <h4 className="text-4xl font-bold w-max">

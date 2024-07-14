@@ -38,7 +38,7 @@ export default function WalletConnect() {
               if (!connected) {
                 return (
                   <button
-                    className="bg-[#FF5D5D] px-8 py-2.5 font-bold rounded-3xl text-slate-900 text-base flex justify-end items-center"
+                    className="bg-[#FF5D5D] px-8 py-2.5 font-bold rounded-3xl text-slate-800 text-base flex justify-end items-center"
                     onClick={openConnectModal}
                     type="button"
                   >
@@ -49,7 +49,7 @@ export default function WalletConnect() {
               if (chain.unsupported) {
                 return (
                   <button
-                    className="bg-[#000] px-4 py-2 rounded text-white"
+                    className="bg-[#000] px-4 py-2 rounded text-slate-200"
                     onClick={openChainModal}
                     type="button"
                   >

@@ -170,8 +170,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col gap-6 justify-start items-center min-h-screen text-white">
-      <div className="max-w-xl w-full border-4 border-[#FF5D5D] rounded-2xl shadow-md px-8 pb-9 pt-6 mt-56">
+    <div className="flex flex-col gap-8 justify-start items-center min-h-screen text-slate-200">
+      <div className="max-w-xl w-full border-4 border-[#FF5D5D] rounded-xl shadow-md px-8 pb-9 pt-6 mt-56">
         {showHistory ? (
           <div className="flex flex-row justify-between items-center">
             <button onClick={() => setShowHistory(false)}>
@@ -357,7 +357,7 @@ export default function Home() {
         )}
       </div>
       {txInitiating && (
-        <div className="relative flex flex-col items-center justify-between gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-3xl shadow-md px-8 py-10">
+        <div className="relative flex flex-col items-center justify-between gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-xl shadow-md px-8 pt-10 pb-6">
           <div className="absolute top-3 right-3">
             <X
               className="cursor-pointer"
@@ -367,7 +367,7 @@ export default function Home() {
               strokeWidth={4}
             />
           </div>
-          <div className="flex flex-row justify-between items-center gap-4 w-full px-8">
+          <div className="flex flex-row justify-between items-center gap-4 w-full px-12">
             <div className="flex flex-col gap-2 justify-center items-center">
               <div className="bg-white rounded-full p-2 h-14 w-14 flex justify-center items-center">
                 <Image
@@ -418,7 +418,7 @@ export default function Home() {
                       : "#"
                   }
                   target="_blank"
-                  className={`text-white px-2 py-1 rounded-full text-xs ${
+                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${
                     TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
                   }`}
                 >
@@ -430,7 +430,7 @@ export default function Home() {
                 </Link>
               ) : (
                 <div
-                  className={`text-white px-2 py-1 rounded-full text-xs ${
+                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${
                     TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
                   }`}
                 >
