@@ -15,6 +15,12 @@ export const hekla: Chain = {
       webSocket: undefined,
     },
   },
+  blockExplorers: {
+    default: {
+      name: "Taiko",
+      url: "https://explorer.hekla.taiko.xyz",
+    },
+  },
 };
 
 export const holesky: Chain = {
@@ -30,6 +36,12 @@ export const holesky: Chain = {
     default: {
       http: ["https://1rpc.io/holesky"],
       webSocket: undefined,
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Holesky",
+      url: "https://holesky.etherscan.io",
     },
   },
 };

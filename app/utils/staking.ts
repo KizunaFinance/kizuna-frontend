@@ -1,9 +1,7 @@
 import { Address, erc20Abi, formatUnits } from "viem";
 import {
-    readContract,
     writeContract,
-    waitForTransactionReceipt,
-    estimateGas
+    waitForTransactionReceipt
 } from "@wagmi/core";
 import { config, hekla, holesky } from "../providers/config";
 import { stakingABI } from "../abi/stakingABI";
@@ -44,8 +42,6 @@ export const stakeToken = async (chain: Chain, amount: number, userAddress: Addr
 //         args: [amount],
 //     });
 // }
-
-
 
 export const unstakeToken = async (chain: Chain, amount: bigint, userAddress: Address) => {
     try {
