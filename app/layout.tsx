@@ -8,7 +8,7 @@ const outfit = Outfit({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Daiko Finance",
   description:
     "Daiko Finance is a decentralized bridge to send and receive crypto assets from and to Taiko & Ethereum.",
