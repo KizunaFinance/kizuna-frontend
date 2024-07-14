@@ -15,17 +15,17 @@ import { formatUnits } from "viem";
 import { bridgeToken } from "@/app/utils/bridge";
 import { switchChain, getBalance } from "@wagmi/core";
 import Link from "next/link";
-import { Link2, LoaderCircleIcon } from "lucide-react";
+import { Link2, LoaderCircleIcon, X } from "lucide-react";
 import { Message } from "@/app/utils/types";
-import { createClient } from '@layerzerolabs/scan-client';
+import { createClient } from "@layerzerolabs/scan-client";
 
 export default function Home() {
   const [tokenIn, setTokenIn] = useState<any>(Chains[0]);
   const [tokenOut, setTokenOut] = useState<any>(Chains[1]);
-  const [txHash, setTxhash] = useState<string | null>(null)
+  const [txHash, setTxhash] = useState<string | null>(null);
   const [txFailed, setTxFailed] = useState<boolean>(false);
   const [message, setMessage] = useState<Message | undefined>(undefined);
-  const [txInitiating, setTxInitiating] = useState<boolean>(false)
+  const [txInitiating, setTxInitiating] = useState<boolean>(false);
 
   const { address, chain } = useAccount();
 
@@ -52,36 +52,36 @@ export default function Home() {
     }
   }
 
-
   useEffect(() => {
     if (txHash) {
       setTxFailed(false);
-      getTxpoolStatus(txHash)
+      getTxpoolStatus(txHash);
     }
   }, [txHash]);
 
   const getTxpoolStatus = async (txHash: string) => {
     try {
-      const client = createClient('testnet');
-      const { messages } = await client.getMessagesBySrcTxHash(
-        txHash,
-      );
+      const client = createClient("testnet");
+      const { messages } = await client.getMessagesBySrcTxHash(txHash);
       const _message: Message = messages[0] as Message;
       setMessage(_message);
-      if (!_message || (_message.status !== "DELIVERED" && _message.status !== "FAILED" && _message.status !== "BLOCKED")) {
+      if (
+        !_message ||
+        (_message.status !== "DELIVERED" &&
+          _message.status !== "FAILED" &&
+          _message.status !== "BLOCKED")
+      ) {
         setTimeout(() => {
           getTxpoolStatus(txHash);
         }, 60 * 1000);
       }
-    }
-    catch (e) {
-      console.log("error", e)
+    } catch (e) {
+      console.log("error", e);
       setTimeout(() => {
         getTxpoolStatus(txHash);
       }, 60 * 1000);
     }
-
-  }
+  };
 
   useEffect(() => {
     if (chain?.id === 17000) {
@@ -129,7 +129,7 @@ export default function Home() {
       return {
         name: "Failed",
         bg: "bg-red-500",
-        icon: "/icons/failed.svg"
+        icon: "/icons/failed.svg",
       };
     }
     if (
@@ -140,25 +140,25 @@ export default function Home() {
       return {
         name: "In Progress",
         bg: "bg-blue-500",
-        icon: "/icons/inprogress.svg"
+        icon: "/icons/inprogress.svg",
       };
     } else if (txStatus === "DELIVERED") {
       return {
         name: "Success",
         bg: "bg-green-500",
-        icon: "/icons/success.svg"
+        icon: "/icons/success.svg",
       };
     } else if (txStatus === "FAILED" || txStatus === "BLOCKED") {
       return {
         name: "Failed",
         bg: "bg-red-500",
-        icon: "/icons/failed.svg"
+        icon: "/icons/failed.svg",
       };
     }
     return {
       name: "In Progress",
       bg: "bg-blue-500",
-      icon: "/icons/inprogress.svg"
+      icon: "/icons/inprogress.svg",
     };
   }
 
@@ -182,11 +182,11 @@ export default function Home() {
                     {holeskyBalanceResult.data && heklaBalanceResult.data
                       ? tokenIn.id === 17000
                         ? parseFloat(
-                          formatUnits(holeskyBalanceResult.data.value, 18)
-                        ).toFixed(6)
+                            formatUnits(holeskyBalanceResult.data.value, 18)
+                          ).toFixed(6)
                         : parseFloat(
-                          formatUnits(heklaBalanceResult.data.value, 18)
-                        ).toFixed(6)
+                            formatUnits(heklaBalanceResult.data.value, 18)
+                          ).toFixed(6)
                       : 0}
                   </div>
                   <button className="text-[#FF5D5D] font-bold">Max</button>
@@ -246,11 +246,11 @@ export default function Home() {
                     {holeskyBalanceResult.data && heklaBalanceResult.data
                       ? tokenOut.id === 17000
                         ? parseFloat(
-                          formatUnits(holeskyBalanceResult.data.value, 18)
-                        ).toFixed(6)
+                            formatUnits(holeskyBalanceResult.data.value, 18)
+                          ).toFixed(6)
                         : parseFloat(
-                          formatUnits(heklaBalanceResult.data.value, 18)
-                        ).toFixed(6)
+                            formatUnits(heklaBalanceResult.data.value, 18)
+                          ).toFixed(6)
                       : 0}
                   </div>
                 </div>
@@ -318,70 +318,116 @@ export default function Home() {
           </Button>
         </div>
       </div>
-      {txInitiating && <div className="flex flex-col items-center justify-between gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-3xl shadow-md px-8 py-10">
-        <div className="flex flex-row justify-between items-center gap-4 w-full px-8">
-          <div className="flex flex-col gap-2 justify-center items-center">
-            <Image
-              className="bg-white rounded-full p-1 pb-1.5"
-              src={tokenIn.iconUrl as string}
-              alt="Token"
-              width={50}
-              height={50}
+      {txInitiating && (
+        <div className="relative flex flex-col items-center justify-between gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-3xl shadow-md px-8 py-10">
+          <div className="absolute top-4 right-4">
+            <X
+              className="cursor-pointer"
+              onClick={() => setTxInitiating(false)}
+              size={25}
+              color="#FF5D5D"
+              strokeWidth={4}
             />
-            <h4>{tokenIn.name}</h4>
-            {txHash && <Link
-              href={`${tokenIn.blockExplorers.default.url}/tx/${txHash}`}
-              target="_blank"
-              className="flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D]"
-            >
-              <Link2 size={18} />
-              <h5>Explorer</h5>
-            </Link>}
           </div>
-          <div className="flex flex-col gap-4 justify-center items-center pb-8">
-            {TxStatus({ txStatus: message?.status || 'INFLIGHT' })?.name === "In Progress" ? (
-              <LoaderCircleIcon
-                size={"40"}
-                className="text-[#FF5D5D] animate-spin"
-              />
-            ) :
+          <div className="flex flex-row justify-between items-center gap-4 w-full px-8">
+            <div className="flex flex-col gap-2 justify-center items-center">
               <Image
-                src={TxStatus({ txStatus: message?.status || 'INFLIGHT' })?.icon}
-                alt={TxStatus({ txStatus: message?.status || 'INFLIGHT' })?.name}
-                width={40}
-                height={40}
+                className="bg-white rounded-full p-1 pb-1.5"
+                src={tokenIn.iconUrl as string}
+                alt="Token"
+                width={50}
+                height={50}
               />
-            }
-
-            <div className={`text-white px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || 'INFLIGHT' })?.bg
-              }`}>
+              <h4>{tokenIn.name}</h4>
               {
-                TxStatus({
-                  txStatus: message?.status || "INFLIGHT",
-                })?.name
+                <Link
+                  href={`${tokenIn.blockExplorers.default.url}/tx/${txHash}`}
+                  target="_blank"
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
+                    txHash ? "flex" : "invisible"
+                  }`}
+                >
+                  <Link2 size={18} />
+                  <h5>Explorer</h5>
+                </Link>
+              }
+            </div>
+            <div className="flex flex-col gap-4 justify-center items-center pb-4">
+              {TxStatus({ txStatus: message?.status || "INFLIGHT" })?.name ===
+              "In Progress" ? (
+                <LoaderCircleIcon
+                  size={"40"}
+                  className="text-[#FF5D5D] animate-spin"
+                />
+              ) : (
+                <Image
+                  src={
+                    TxStatus({ txStatus: message?.status || "INFLIGHT" })?.icon
+                  }
+                  alt={
+                    TxStatus({ txStatus: message?.status || "INFLIGHT" })?.name
+                  }
+                  width={40}
+                  height={40}
+                />
+              )}
+              {message?.srcTxHash ? (
+                <Link
+                  href={
+                    message?.srcTxHash
+                      ? `https://testnet.layerzeroscan.com/tx/${message?.srcTxHash}`
+                      : "#"
+                  }
+                  target="_blank"
+                  className={`text-white px-2 py-1 rounded-full text-xs ${
+                    TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                  }`}
+                >
+                  {
+                    TxStatus({
+                      txStatus: message?.status || "INFLIGHT",
+                    })?.name
+                  }
+                </Link>
+              ) : (
+                <div
+                  className={`text-white px-2 py-1 rounded-full text-xs ${
+                    TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                  }`}
+                >
+                  {
+                    TxStatus({
+                      txStatus: message?.status || "INFLIGHT",
+                    })?.name
+                  }
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col gap-2 justify-center items-center">
+              <Image
+                className="bg-white rounded-full p-1 pb-1.5"
+                src={tokenOut.iconUrl as string}
+                alt="Token"
+                width={50}
+                height={50}
+              />
+              <h4>{tokenOut.name}</h4>
+              {
+                <Link
+                  href={`${tokenOut.blockExplorers.default.url}/tx/${message?.dstTxHash}`}
+                  target="_blank"
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
+                    message?.dstTxHash ? "flex" : "invisible"
+                  }`}
+                >
+                  <Link2 size={18} />
+                  <h5>Explorer</h5>
+                </Link>
               }
             </div>
           </div>
-          <div className="flex flex-col gap-2 justify-center items-center">
-            <Image
-              className="bg-white rounded-full p-1 pb-1.5"
-              src={tokenOut.iconUrl as string}
-              alt="Token"
-              width={50}
-              height={50}
-            />
-            <h4>{tokenOut.name}</h4>
-            {message?.dstTxHash && <Link
-              href={`${tokenOut.blockExplorers.default.url}/tx/${message?.dstTxHash}`}
-              target="_blank"
-              className="flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D]"
-            >
-              <Link2 size={18} />
-              <h5>Explorer</h5>
-            </Link>}
-          </div>
         </div>
-      </div>}
+      )}
     </div>
   );
 }
