@@ -1,25 +1,16 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+
 import { useEffect, useRef, useState } from "react";
 import { useAccount, useReadContract, useBalance } from "wagmi";
-
+import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { formatUnits } from "viem";
 
-import { switchChain, getBalance } from "@wagmi/core";
-import { Chains, config } from "../../providers/config";
-import { stakeToken, unstakeToken } from "../../utils/staking";
+import { Chains } from "../../providers/config";
+import { unstakeToken } from "../../utils/staking";
 import { stakingABI } from "../../abi/stakingABI";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import Image from "next/image";
 import { STAKING_HEKLA, STAKING_HOLESKY } from "@/app/utils/address";
+import { Bar, BarChart } from "recharts";
 
 export default function Home() {
   const { address, isConnected, chain } = useAccount();
@@ -39,7 +30,6 @@ export default function Home() {
     chainId: Chains[1].id,
   });
 
-  const inputAmount = useRef<HTMLInputElement>(null);
   const [selectchain, setSelectchain] = useState<any>(Chains[0]);
   const {
     data: holeskyBalance,
@@ -65,7 +55,24 @@ export default function Home() {
     args: [address!],
   });
 
-  const [checked, setChecked] = useState(false);
+  const chartData = [
+    { month: "January", desktop: 186, mobile: 80 },
+    { month: "February", desktop: 305, mobile: 200 },
+    { month: "March", desktop: 237, mobile: 120 },
+    { month: "April", desktop: 73, mobile: 190 },
+    { month: "May", desktop: 209, mobile: 130 },
+    { month: "June", desktop: 214, mobile: 140 },
+  ];
+  const chartConfig = {
+    desktop: {
+      label: "Desktop",
+      color: "hsl(var(--chart-1))",
+    },
+    mobile: {
+      label: "Mobile",
+      color: "hsl(var(--chart-2))",
+    },
+  } satisfies ChartConfig;
   return (
     <main className="flex min-h-screen flex-col items-start justify-start gap-12 p-24 pt-36 text-slate-200">
       <div className="w-full flex flex-col items-start justify-center gap-6">
@@ -73,44 +80,66 @@ export default function Home() {
           Avaliable Liquidity
         </h1>
         <div className="grid grid-cols-2 gap-4 w-full">
-          <div className="flex flex-row justify-between items-center gap-4 text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6">
-            <div className="flex flex-col justify-start items-start gap-1">
-              <h3 className=" text-xl font-medium">Ethereum</h3>
-              <h4 className="text-4xl font-bold">
-                {holeskyContractBalance.data
-                  ? formatUnits(holeskyContractBalance.data.value, 18)
-                  : 0}{" "}
-                ETH
-              </h4>
+          <div className="flex flex-col justify-start items-start gap-4 text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6">
+            <div className="flex flex-row justify-between items-center gap-4 w-full">
+              <div className="flex flex-col justify-start items-start gap-1">
+                <h3 className=" text-xl font-medium">Ethereum</h3>
+                <h4 className="text-4xl font-bold">
+                  {holeskyContractBalance.data
+                    ? formatUnits(holeskyContractBalance.data.value, 18)
+                    : 0}{" "}
+                  ETH
+                </h4>
+              </div>
+              <div className="h-16 w-16 bg-slate-200 rounded-full flex justify-center items-center">
+                <Image
+                  src="/chains/icons/Ethereum.svg"
+                  alt="Ethereum"
+                  width={50}
+                  height={50}
+                />
+              </div>
             </div>
-            <div className="h-16 w-16 bg-slate-200 rounded-full flex justify-center items-center">
-              <Image
-                src="/chains/icons/Ethereum.svg"
-                alt="Ethereum"
-                width={50}
-                height={50}
-              />
-            </div>
+            <ChartContainer
+              config={chartConfig}
+              className="min-h-[200px] w-full"
+            >
+              <BarChart accessibilityLayer data={chartData}>
+                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+              </BarChart>
+            </ChartContainer>
           </div>
 
-          <div className="flex flex-row justify-between items-center gap-4 text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6">
-            <div className="flex flex-col justify-start items-start gap-1">
-              <h3 className=" text-xl font-medium">Taiko</h3>
-              <h4 className="text-4xl font-bold">
-                {heklaContractBalance.data
-                  ? formatUnits(heklaContractBalance.data.value, 18)
-                  : 0}{" "}
-                ETH
-              </h4>
+          <div className="text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6 flex flex-col justify-start items-start gap-4">
+            <div className="flex flex-row justify-between items-center gap-4 w-full">
+              <div className="flex flex-col justify-start items-start gap-1">
+                <h3 className=" text-xl font-medium">Taiko</h3>
+                <h4 className="text-4xl font-bold">
+                  {heklaContractBalance.data
+                    ? formatUnits(heklaContractBalance.data.value, 18)
+                    : 0}{" "}
+                  ETH
+                </h4>
+              </div>
+              <div className="h-16 w-16 bg-slate-800 rounded-full flex justify-center items-center p-2">
+                <Image
+                  src="/chains/icons/Taiko.svg"
+                  alt="Taiko"
+                  width={50}
+                  height={50}
+                />
+              </div>
             </div>
-            <div className="h-16 w-16 bg-slate-800 rounded-full flex justify-center items-center p-2">
-              <Image
-                src="/chains/icons/Taiko.svg"
-                alt="Taiko"
-                width={50}
-                height={50}
-              />
-            </div>
+            <ChartContainer
+              config={chartConfig}
+              className="min-h-[200px] w-full"
+            >
+              <BarChart accessibilityLayer data={chartData}>
+                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+              </BarChart>
+            </ChartContainer>
           </div>
         </div>
       </div>

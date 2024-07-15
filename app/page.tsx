@@ -7,10 +7,10 @@ export default function Home() {
       <div className="flex flex-col items-center gap-6">
         <h1 className="text-5xl font-bold">Welcome to the Daiko Bridge</h1>
         <p className="text-xl max-w-4xl">
-          Daiko Finance is a DeFi platform that bridges Ethereum and Taiko,
-          enabling seamless asset transfers between the two networks. Users can
-          stake their assets to earn attractive rewards, leveraging the
-          strengths of both ecosystems.
+          Daiko Finance is a DeFi platform that connects Ethereum and Taiko,
+          facilitating effortless asset transfers between these networks. We use
+          LayerZero for secure and permissionless communication between the
+          chains.
         </p>
       </div>
       <Link

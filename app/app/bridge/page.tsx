@@ -174,11 +174,17 @@ export default function Home() {
     <div className="flex flex-col gap-8 justify-start items-center min-h-screen text-slate-200">
       <div className="max-w-xl w-full border-4 border-[#FF5D5D] rounded-xl shadow-md px-8 pb-9 pt-6 mt-56">
         {showHistory ? (
-          <div className="flex flex-row justify-between items-center">
-            <button onClick={() => setShowHistory(false)}>
-              <Undo2 size={35} color="#FF5D5D" strokeWidth={2.2} />
-            </button>
-            <div></div>
+          <div className="flex flex-col items-center justify-between gap-6 w-full">
+            <div className="grid grid-cols-3 gap-2 items-center w-full">
+              <button onClick={() => setShowHistory(false)}>
+                <Undo2 size={35} color="#FF5D5D" />
+              </button>
+              <h2 className="text-2xl font-bold text-[#FF5D5D] text-center">
+                History
+              </h2>
+              <div></div>
+            </div>
+            <div className="text-slate-200 font-bold text-2xl">Coming Soon</div>
           </div>
         ) : (
           <div className="flex flex-col items-start justify-center gap-6">
@@ -195,7 +201,7 @@ export default function Home() {
                 </span>
               </h1>
               <button onClick={() => setShowHistory(true)}>
-                <History size={35} color="#FF5D5D" strokeWidth={2.2} />
+                <History size={35} color="#FF5D5D" />
               </button>
             </div>
             <div className="flex flex-col justify-start items-start w-full">
