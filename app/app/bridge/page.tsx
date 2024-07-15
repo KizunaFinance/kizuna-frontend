@@ -21,7 +21,7 @@ import { formatEther, formatUnits } from "viem";
 import { bridgeToken, convertToBigInt } from "@/app/utils/bridge";
 import { switchChain } from "@wagmi/core";
 import Link from "next/link";
-import { Link2, LoaderCircleIcon, X, History, Undo2 } from "lucide-react";
+import { Link2, LoaderCircleIcon, X, History, Undo2, Fuel } from "lucide-react";
 import { Message } from "@/app/utils/types";
 import { createClient } from "@layerzerolabs/scan-client";
 import { BridgeAbi } from "@/app/abi/brdigeABI";
@@ -383,7 +383,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div>{parseFloat(gasFee).toFixed(6)}</div>
+
               <Button
                 onClick={async () => {
                   if (tokenIn.id === chain?.id) {
@@ -409,6 +409,15 @@ export default function Home() {
               >
                 {tokenIn.id === chain?.id ? "Send" : "Wrong Network"}
               </Button>
+              {parseFloat(gasFee) > 0 && (
+                <div className="flex justify-between items-center w-full mt-4 text-slate-200 rounded-lg px-6 py-2.5 bg-slate-700 font-medium text-sm">
+                  <div className="flex flex-row gap-1 justify-start items-center">
+                    <Fuel size={15} />
+                    <h6>Gas Fee</h6>
+                  </div>
+                  <h6>~ ${parseFloat(gasFee).toFixed(6)}</h6>
+                </div>
+              )}
             </div>
           </div>
         )}
