@@ -11,23 +11,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { useAccount, useBalance, useReadContract, usePublicClient } from "wagmi";
+import {
+  useAccount,
+  useBalance,
+  useReadContract,
+  usePublicClient,
+} from "wagmi";
 import { formatEther, formatUnits } from "viem";
 import { bridgeToken, convertToBigInt } from "@/app/utils/bridge";
 import { switchChain } from "@wagmi/core";
 import Link from "next/link";
-import {
-  Link2,
-  LoaderCircleIcon,
-  X,
-  History,
-  Undo2,
-} from "lucide-react";
+import { Link2, LoaderCircleIcon, X, History, Undo2 } from "lucide-react";
 import { Message } from "@/app/utils/types";
 import { createClient } from "@layerzerolabs/scan-client";
 import { BridgeAbi } from "@/app/abi/brdigeABI";
 import { BRIDGE_HOLESKY, BRIDGE_HEKLA } from "@/app/utils/address";
-
 
 export default function Home() {
   const [tokenIn, setTokenIn] = useState<any>(Chains[0]);
@@ -37,20 +35,18 @@ export default function Home() {
   const [message, setMessage] = useState<Message | undefined>(undefined);
   const [txInitiating, setTxInitiating] = useState<boolean>(false);
   const [showHistory, setShowHistory] = useState<boolean>(false);
-  const [gasFee, setGasFee] = useState<string>('0');
+  const [gasFee, setGasFee] = useState<string>("0");
   const { address, chain } = useAccount();
-  const [amountIn, setAmountIn] = useState<string>('0');
+  const [amountIn, setAmountIn] = useState<string>("0");
 
   const inputamountRef = useRef<HTMLInputElement>(null);
 
-
-  const publicClient = usePublicClient()
+  const publicClient = usePublicClient();
 
   const HEKLA_V2_TESTNET = 40274;
   const HOLESKY_V2_TESTNET = 40217;
 
-  let options: `0x${string}` =
-    "0x00030100110100000000000000000000000000030d40";
+  let options: `0x${string}` = "0x00030100110100000000000000000000000000030d40";
 
   let { data: nativeFeeResult } = useReadContract({
     abi: BridgeAbi,
@@ -64,12 +60,11 @@ export default function Home() {
   });
 
   useEffect(() => {
-    console.log("useEffect called")
+    console.log("useEffect called");
     if (nativeFeeResult?.nativeFee && inputamountRef.current?.value) {
-      getGasFees(nativeFeeResult.nativeFee)
+      getGasFees(nativeFeeResult.nativeFee);
     }
-  }, [nativeFeeResult, amountIn])
-
+  }, [nativeFeeResult, amountIn]);
 
   const getGasFees = async (nativeFee: bigint) => {
     if (!publicClient || !inputamountRef.current?.value) {
@@ -77,7 +72,7 @@ export default function Home() {
     }
     const tx = await publicClient.estimateContractGas({
       abi: BridgeAbi,
-      functionName: 'send',
+      functionName: "send",
       address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
       args: [
         tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET,
@@ -85,11 +80,12 @@ export default function Home() {
         address!,
         options,
       ],
-      value: convertToBigInt(Number(inputamountRef.current?.value || '0'), 18) + nativeFee,
-    })
+      value:
+        convertToBigInt(Number(inputamountRef.current?.value || "0"), 18) +
+        nativeFee,
+    });
     setGasFee(formatEther(tx + nativeFee));
-  }
-
+  };
 
   const holeskyBalanceResult = useBalance({
     address: address!,
@@ -266,11 +262,11 @@ export default function Home() {
                         {holeskyBalanceResult.data && heklaBalanceResult.data
                           ? tokenIn.id === 17000
                             ? parseFloat(
-                              formatUnits(holeskyBalanceResult.data.value, 18)
-                            ).toFixed(6)
+                                formatUnits(holeskyBalanceResult.data.value, 18)
+                              ).toFixed(6)
                             : parseFloat(
-                              formatUnits(heklaBalanceResult.data.value, 18)
-                            ).toFixed(6)
+                                formatUnits(heklaBalanceResult.data.value, 18)
+                              ).toFixed(6)
                           : 0}
                       </div>
                       <button className="text-[#FF5D5D] font-bold">Max</button>
@@ -338,11 +334,11 @@ export default function Home() {
                         {holeskyBalanceResult.data && heklaBalanceResult.data
                           ? tokenOut.id === 17000
                             ? parseFloat(
-                              formatUnits(holeskyBalanceResult.data.value, 18)
-                            ).toFixed(6)
+                                formatUnits(holeskyBalanceResult.data.value, 18)
+                              ).toFixed(6)
                             : parseFloat(
-                              formatUnits(heklaBalanceResult.data.value, 18)
-                            ).toFixed(6)
+                                formatUnits(heklaBalanceResult.data.value, 18)
+                              ).toFixed(6)
                           : 0}
                       </div>
                     </div>
@@ -387,6 +383,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+              <div>{parseFloat(gasFee).toFixed(6)}</div>
               <Button
                 onClick={async () => {
                   if (tokenIn.id === chain?.id) {
@@ -442,8 +439,9 @@ export default function Home() {
                 <Link
                   href={`${tokenIn.blockExplorers.default.url}/tx/${txHash}`}
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${txHash ? "flex" : "invisible"
-                    }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
+                    txHash ? "flex" : "invisible"
+                  }`}
                 >
                   <Link2 size={18} />
                   <h5>Explorer</h5>
@@ -452,7 +450,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-4 justify-center items-center pb-4">
               {TxStatus({ txStatus: message?.status || "INFLIGHT" })?.name ===
-                "In Progress" ? (
+              "In Progress" ? (
                 <LoaderCircleIcon
                   size={"40"}
                   className="text-[#FF5D5D] animate-spin"
@@ -477,8 +475,9 @@ export default function Home() {
                       : "#"
                   }
                   target="_blank"
-                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
-                    }`}
+                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${
+                    TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                  }`}
                 >
                   {
                     TxStatus({
@@ -488,8 +487,9 @@ export default function Home() {
                 </Link>
               ) : (
                 <div
-                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
-                    }`}
+                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${
+                    TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                  }`}
                 >
                   {
                     TxStatus({
@@ -514,8 +514,9 @@ export default function Home() {
                 <Link
                   href={`${tokenOut.blockExplorers.default.url}/tx/${message?.dstTxHash}`}
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${message?.dstTxHash ? "flex" : "invisible"
-                    }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
+                    message?.dstTxHash ? "flex" : "invisible"
+                  }`}
                 >
                   <Link2 size={18} />
                   <h5>Explorer</h5>
@@ -528,7 +529,11 @@ export default function Home() {
     </div>
   );
 }
-function usePrepareContractWrite(arg0: { addressOrName: any; contractInterface: any; functionName: string; args: never[]; }): { config: any; } {
+function usePrepareContractWrite(arg0: {
+  addressOrName: any;
+  contractInterface: any;
+  functionName: string;
+  args: never[];
+}): { config: any } {
   throw new Error("Function not implemented.");
 }
-

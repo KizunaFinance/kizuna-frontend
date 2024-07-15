@@ -63,6 +63,14 @@ export default function Home() {
     { month: "May", desktop: 209, mobile: 130 },
     { month: "June", desktop: 214, mobile: 140 },
   ];
+  const chartData1 = [
+    { month: "January", desktop: 80, mobile: 186 },
+    { month: "February", desktop: 200, mobile: 100 },
+    { month: "March", desktop: 120, mobile: 237 },
+    { month: "April", desktop: 120, mobile: 50 },
+    { month: "May", desktop: 147, mobile: 89 },
+    { month: "June", desktop: 160, mobile: 210 },
+  ];
   const chartConfig = {
     desktop: {
       label: "Desktop",
@@ -104,7 +112,7 @@ export default function Home() {
               config={chartConfig}
               className="min-h-[200px] w-full"
             >
-              <BarChart accessibilityLayer data={chartData}>
+              <BarChart accessibilityLayer data={chartData1}>
                 <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
                 <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
               </BarChart>
