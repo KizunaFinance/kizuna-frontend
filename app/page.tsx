@@ -6,7 +6,7 @@ export default function Home() {
       <Image src="/daiko-white.svg" alt="logo" width={300} height={300} />
       <div className="flex flex-col items-center gap-6">
         <h1 className="text-5xl font-bold">Welcome to the Daiko Bridge</h1>
-        <p className="text-xl max-w-3xl">
+        <p className="text-xl max-w-4xl">
           Daiko Finance is a DeFi platform that bridges Ethereum and Taiko,
           enabling seamless asset transfers between the two networks. Users can
           stake their assets to earn attractive rewards, leveraging the

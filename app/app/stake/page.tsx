@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useEffect, useRef, useState } from "react";
 import { useAccount, useReadContract, useBalance } from "wagmi";
-
+import { toast } from "sonner";
 import { formatUnits } from "viem";
 
 import { switchChain, getBalance } from "@wagmi/core";
@@ -85,7 +85,7 @@ export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center gap-12 mt-56  text-slate-200">
       <div className="flex flex-col items-center justify-center gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-xl px-8 pb-10 pt-6">
-        <h1 className="text-3xl font-medium text-[#FF5D5D] w-full text-left">
+        <h1 className="text-3xl font-bold text-[#FF5D5D] w-full text-left">
           Stake ETH
         </h1>
 
@@ -152,9 +152,9 @@ export default function Home() {
                 address!
               );
               if (stakeResp.success) {
-                alert("Staked successfully");
+                toast.success("Staked successfully");
               } else {
-                alert("Failed to stake");
+                toast.error("Failed to stake");
               }
             }}
             className="text-slate-800 w-full text-xl py-6 font-medium bg-[#FF5D5D] hover:bg-white"

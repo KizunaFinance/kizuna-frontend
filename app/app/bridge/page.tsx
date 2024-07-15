@@ -183,7 +183,7 @@ export default function Home() {
         ) : (
           <div className="flex flex-col items-start justify-center gap-6">
             <div className="flex flex-row justify-between items-center gap-4 w-full">
-              <h1 className="text-3xl font-medium text-[#FF5D5D] flex flex-row justify-center place-items-end gap-2">
+              <h1 className="text-3xl font-bold text-[#FF5D5D] flex flex-row justify-center place-items-end gap-2">
                 Bridge{" "}
                 <span className="font-black">
                   <Image
