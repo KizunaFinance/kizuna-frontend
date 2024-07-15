@@ -60,6 +60,7 @@ export const bridgeToken = async (
   }
 };
 
+
 const waitForTransaction = async (hash: Address) => {
   try {
     const transactionReceipt = await waitForTransactionReceipt(config, {

@@ -26,6 +26,7 @@ import { Message } from "@/app/utils/types";
 import { createClient } from "@layerzerolabs/scan-client";
 import { BridgeAbi } from "@/app/abi/brdigeABI";
 import { BRIDGE_HOLESKY, BRIDGE_HEKLA } from "@/app/utils/address";
+import axios from 'axios';
 
 export default function Home() {
   const [tokenIn, setTokenIn] = useState<any>(Chains[0]);
@@ -38,6 +39,7 @@ export default function Home() {
   const [gasFee, setGasFee] = useState<string>("0");
   const { address, chain } = useAccount();
   const [amountIn, setAmountIn] = useState<string>("0");
+  const [price, setPrice] = useState<number | null>(null);
 
   const inputamountRef = useRef<HTMLInputElement>(null);
 
@@ -58,6 +60,22 @@ export default function Home() {
       false,
     ],
   });
+
+
+  useEffect(() => {
+    const fetchEthPrice = async () => {
+      try {
+        const response = await axios.get(
+          'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd'
+        );
+        setPrice(response.data.ethereum.usd);
+      } catch (err) {
+        setPrice(0);
+      }
+    };
+
+    fetchEthPrice();
+  }, []);
 
   useEffect(() => {
     console.log("useEffect called");
@@ -84,7 +102,7 @@ export default function Home() {
         convertToBigInt(Number(inputamountRef.current?.value || "0"), 18) +
         nativeFee,
     });
-    setGasFee(formatEther(tx + nativeFee));
+    setGasFee(formatEther((tx) + nativeFee));
   };
 
   const holeskyBalanceResult = useBalance({
@@ -262,11 +280,11 @@ export default function Home() {
                         {holeskyBalanceResult.data && heklaBalanceResult.data
                           ? tokenIn.id === 17000
                             ? parseFloat(
-                                formatUnits(holeskyBalanceResult.data.value, 18)
-                              ).toFixed(6)
+                              formatUnits(holeskyBalanceResult.data.value, 18)
+                            ).toFixed(6)
                             : parseFloat(
-                                formatUnits(heklaBalanceResult.data.value, 18)
-                              ).toFixed(6)
+                              formatUnits(heklaBalanceResult.data.value, 18)
+                            ).toFixed(6)
                           : 0}
                       </div>
                       <button className="text-[#FF5D5D] font-bold">Max</button>
@@ -334,11 +352,11 @@ export default function Home() {
                         {holeskyBalanceResult.data && heklaBalanceResult.data
                           ? tokenOut.id === 17000
                             ? parseFloat(
-                                formatUnits(holeskyBalanceResult.data.value, 18)
-                              ).toFixed(6)
+                              formatUnits(holeskyBalanceResult.data.value, 18)
+                            ).toFixed(6)
                             : parseFloat(
-                                formatUnits(heklaBalanceResult.data.value, 18)
-                              ).toFixed(6)
+                              formatUnits(heklaBalanceResult.data.value, 18)
+                            ).toFixed(6)
                           : 0}
                       </div>
                     </div>
@@ -415,7 +433,7 @@ export default function Home() {
                     <Fuel size={15} />
                     <h6>Gas Fee</h6>
                   </div>
-                  <h6>~ ${parseFloat(gasFee).toFixed(6)}</h6>
+                  <h6>~ ${price ? (parseFloat(gasFee) * price).toFixed(2) : 0}</h6>
                 </div>
               )}
             </div>
@@ -448,9 +466,8 @@ export default function Home() {
                 <Link
                   href={`${tokenIn.blockExplorers.default.url}/tx/${txHash}`}
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
-                    txHash ? "flex" : "invisible"
-                  }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${txHash ? "flex" : "invisible"
+                    }`}
                 >
                   <Link2 size={18} />
                   <h5>Explorer</h5>
@@ -459,7 +476,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-4 justify-center items-center pb-4">
               {TxStatus({ txStatus: message?.status || "INFLIGHT" })?.name ===
-              "In Progress" ? (
+                "In Progress" ? (
                 <LoaderCircleIcon
                   size={"40"}
                   className="text-[#FF5D5D] animate-spin"
@@ -484,9 +501,8 @@ export default function Home() {
                       : "#"
                   }
                   target="_blank"
-                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${
-                    TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
-                  }`}
+                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                    }`}
                 >
                   {
                     TxStatus({
@@ -496,9 +512,8 @@ export default function Home() {
                 </Link>
               ) : (
                 <div
-                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${
-                    TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
-                  }`}
+                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                    }`}
                 >
                   {
                     TxStatus({
@@ -523,9 +538,8 @@ export default function Home() {
                 <Link
                   href={`${tokenOut.blockExplorers.default.url}/tx/${message?.dstTxHash}`}
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
-                    message?.dstTxHash ? "flex" : "invisible"
-                  }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${message?.dstTxHash ? "flex" : "invisible"
+                    }`}
                 >
                   <Link2 size={18} />
                   <h5>Explorer</h5>
