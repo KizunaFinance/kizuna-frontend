@@ -3,11 +3,11 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="flex flex-col gap-12 justify-center items-center min-h-screen text-slate-200 text-center">
-      <Image src="/daiko-white.svg" alt="logo" width={300} height={300} />
+      <Image src="/kizuna-white.svg" alt="logo" width={300} height={300} />
       <div className="flex flex-col items-center gap-6">
-        <h1 className="text-5xl font-bold">Welcome to the Daiko Bridge</h1>
+        <h1 className="text-5xl font-bold">Welcome to the Kizuna Bridge</h1>
         <p className="text-xl max-w-4xl">
-          Daiko Finance is a DeFi platform that connects Ethereum and Taiko,
+          Kizuna Finance is a DeFi platform that connects Ethereum and Taiko,
           facilitating effortless asset transfers between these networks. We use
           LayerZero for secure and permissionless communication between the
           chains.

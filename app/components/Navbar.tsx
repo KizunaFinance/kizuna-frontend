@@ -11,7 +11,7 @@ export default function Navbar() {
     <nav className="fixed px-24 py-6 w-full top-0">
       <div className="grid grid-cols-3 items-center justify-between w-full">
         <Link href="/">
-          <Image src="/daiko-white.svg" alt="logo" width={140} height={40} />
+          <Image src="/kizuna-white.svg" alt="logo" width={140} height={40} />
         </Link>
         <ul className="flex flex-row justify-center items-center gap-12 text-[#FF5D5D] mt-2 text-lg">
           {NavLinks.map((link) => (
