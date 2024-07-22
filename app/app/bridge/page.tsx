@@ -493,7 +493,29 @@ export default function Home() {
                   height={40}
                 />
               )}
-              {message?.srcTxHash ? (
+              <div
+                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                    }`}
+                >
+                  {
+                    TxStatus({
+                      txStatus: message?.status || "INFLIGHT",
+                    })?.name
+                  }
+                </div>
+                {message?.srcTxHash &&  <Link
+                  href={
+                    message?.srcTxHash
+                      ? `https://testnet.layerzeroscan.com/tx/${message?.srcTxHash}`
+                      : "#"
+                  }
+                  target="_blank"
+                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                    }`}
+                >
+                  LayerZero Scan
+                </Link>}
+              {/* {message?.srcTxHash ? (
                 <Link
                   href={
                     message?.srcTxHash
@@ -521,7 +543,7 @@ export default function Home() {
                     })?.name
                   }
                 </div>
-              )}
+              )} */}
             </div>
             <div className="flex flex-col gap-2 justify-center items-center">
               <div className="bg-white rounded-full p-2 h-14 w-14 flex justify-center items-center">
