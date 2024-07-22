@@ -494,27 +494,31 @@ export default function Home() {
                 />
               )}
               <div
-                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
-                    }`}
-                >
-                  {
-                    TxStatus({
-                      txStatus: message?.status || "INFLIGHT",
-                    })?.name
-                  }
-                </div>
-                {message?.srcTxHash &&  <Link
-                  href={
-                    message?.srcTxHash
-                      ? `https://testnet.layerzeroscan.com/tx/${message?.srcTxHash}`
-                      : "#"
-                  }
-                  target="_blank"
-                  className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
-                    }`}
-                >
-                  LayerZero Scan
-                </Link>}
+                className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                  }`}
+              >
+                {
+                  TxStatus({
+                    txStatus: message?.status || "INFLIGHT",
+                  })?.name
+                }
+              </div>
+
+              {message?.srcTxHash && <Link
+                href={
+                  message?.srcTxHash
+                    ? `https://testnet.layerzeroscan.com/tx/${message?.srcTxHash}`
+                    : "#"
+                }
+                target="_blank"
+                className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${txHash ? "flex" : "invisible"
+                  }`}
+              >
+                <Link2 size={18} />
+                <h5>LayerZero Scan</h5>
+              </Link>}
+
+
               {/* {message?.srcTxHash ? (
                 <Link
                   href={
