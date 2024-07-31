@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Outfit, Poppins } from "next/font/google";
 import "./globals.css";
 import WagmiProviderWrapper from "./providers/wagmi";
 import { Toaster } from "@/components/ui/sonner";
 
-const outfit = Outfit({
+const outfit = Poppins({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });

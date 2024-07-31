@@ -84,6 +84,35 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-start justify-start gap-12 p-24 pt-36 text-slate-200">
       <div className="w-full flex flex-col items-start justify-center gap-6">
+        <h1 className="text-3xl font-bold text-slate-200">Points Earned</h1>
+        <div className="grid grid-cols-3 gap-4 w-full">
+          <div className="text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6 flex flex-col justify-start items-start gap-4">
+            <div className="flex flex-row justify-between items-center gap-4 w-full">
+              <div className="flex flex-col justify-start items-start gap-1">
+                <h3 className=" text-xl font-medium">Total Points</h3>
+                <h4 className="text-4xl font-bold">5000</h4>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col justify-start items-start gap-4 text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6">
+            <div className="flex flex-row justify-between items-center gap-4 w-full">
+              <div className="flex flex-col justify-start items-start gap-1">
+                <h3 className=" text-xl font-medium">Bridging Points</h3>
+                <h4 className="text-4xl font-bold">2500</h4>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col justify-start items-start gap-4 text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6">
+            <div className="flex flex-row justify-between items-center gap-4 w-full">
+              <div className="flex flex-col justify-start items-start gap-1">
+                <h3 className=" text-xl font-medium">Staking Points</h3>
+                <h4 className="text-4xl font-bold">2500</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-full flex flex-col items-start justify-center gap-6">
         <h1 className="text-3xl font-bold text-slate-200">
           Avaliable Liquidity
         </h1>

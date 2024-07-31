@@ -8,7 +8,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed px-24 py-6 w-full top-0">
+    <nav className="absolute px-24 py-6 w-full top-0">
       <div className="grid grid-cols-3 items-center justify-between w-full">
         <Link href="/">
           <Image src="/kizuna-white.svg" alt="logo" width={140} height={40} />
