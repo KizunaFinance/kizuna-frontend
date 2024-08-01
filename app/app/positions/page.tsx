@@ -82,7 +82,7 @@ export default function Home() {
     },
   } satisfies ChartConfig;
   return (
-    <main className="flex min-h-screen flex-col items-start justify-start gap-12 p-24 pt-36 text-slate-200">
+    <main className="flex min-h-screen flex-col items-start justify-start gap-12 p-24 pt-16 text-slate-200">
       <div className="w-full flex flex-col items-start justify-center gap-6">
         <h1 className="text-3xl font-bold text-slate-200">Points Earned</h1>
         <div className="grid grid-cols-3 gap-4 w-full">

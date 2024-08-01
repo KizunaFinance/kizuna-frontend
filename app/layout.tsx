@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Outfit, Poppins } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import WagmiProviderWrapper from "./providers/wagmi";
 import { Toaster } from "@/components/ui/sonner";
 
-const outfit = Poppins({
+const outfit = Outfit({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
@@ -54,7 +54,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={outfit.className + " bg-slate-800"}>
+      <body className={outfit.className + " bg-slate-800 relative"}>
         <WagmiProviderWrapper>
           <Toaster />
           {children}
