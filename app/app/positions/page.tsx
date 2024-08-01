@@ -12,6 +12,62 @@ import Image from "next/image";
 import { STAKING_HEKLA, STAKING_HOLESKY } from "@/app/utils/address";
 import { Bar, BarChart } from "recharts";
 
+import * as React from "react"
+import { cn } from "@/lib/utils"
+
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      className
+    )}
+    {...props}
+  />
+))
+Card.displayName = "Card"
+
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    {...props}
+  />
+))
+CardHeader.displayName = "CardHeader"
+
+const CardTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={cn(
+      "text-2xl font-semibold leading-none tracking-tight",
+      className
+    )}
+    {...props}
+  />
+))
+CardTitle.displayName = "CardTitle"
+
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+
 export default function Home() {
   const { address, isConnected, chain } = useAccount();
 
@@ -63,14 +119,7 @@ export default function Home() {
     { month: "May", desktop: 209, mobile: 130 },
     { month: "June", desktop: 214, mobile: 140 },
   ];
-  const chartData1 = [
-    { month: "January", desktop: 80, mobile: 186 },
-    { month: "February", desktop: 200, mobile: 100 },
-    { month: "March", desktop: 120, mobile: 237 },
-    { month: "April", desktop: 120, mobile: 50 },
-    { month: "May", desktop: 147, mobile: 89 },
-    { month: "June", desktop: 160, mobile: 210 },
-  ];
+
   const chartConfig = {
     desktop: {
       label: "Desktop",
@@ -81,6 +130,7 @@ export default function Home() {
       color: "hsl(var(--chart-2))",
     },
   } satisfies ChartConfig;
+
   return (
     <main className="flex min-h-screen flex-col items-start justify-start gap-12 p-24 pt-16 text-slate-200">
       <div className="w-full flex flex-col items-start justify-center gap-6">
@@ -141,7 +191,7 @@ export default function Home() {
               config={chartConfig}
               className="min-h-[200px] w-full"
             >
-              <BarChart accessibilityLayer data={chartData1}>
+              <BarChart accessibilityLayer data={chartData}>
                 <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
                 <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
               </BarChart>
