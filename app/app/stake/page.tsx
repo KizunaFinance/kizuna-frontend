@@ -83,7 +83,7 @@ export default function Home() {
   const [checked, setChecked] = useState(false);
 
   return (
-    <main className="flex flex-col items-center justify-center gap-12 mt-56  text-slate-200">
+    <main className="flex flex-col items-center justify-center gap-12 mt-36  text-slate-200">
       <div className="flex flex-col items-center justify-center gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-xl px-8 pb-10 pt-6">
         <h1 className="text-3xl font-bold text-[#FF5D5D] w-full text-left">
           Stake ETH
