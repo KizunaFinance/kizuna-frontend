@@ -5,7 +5,7 @@ import { Twitter, X } from "lucide-react";
 import Socials from "./components/Socials";
 export default function Home() {
   return (
-    <div className="flex flex-col gap-12 justify-center items-center min-h-screen text-slate-200 text-center">
+    <div className="flex flex-col gap-12 justify-center items-center min-h-screen text-slate-200 text-center px-8 py-12 relative">
       <Image src="/kizuna-white.svg" alt="logo" width={300} height={300} />
       <div className="flex flex-col items-center gap-6">
         <h1 className="text-5xl font-bold">Welcome to the Kizuna Bridge</h1>
@@ -23,7 +23,7 @@ export default function Home() {
       >
         Launch App
       </Link>
-      <div className="flex flex-col justify-center items-center gap-4 mt-4 text-slate-200 text-lg font-medium">
+      <div className="flex flex-col justify-center items-center gap-4 mt-4 text-slate-200 text-lg font-medium md:fixed mb-4 bottom-8">
         <h3>Follow Us</h3>
         <Socials />
       </div>
