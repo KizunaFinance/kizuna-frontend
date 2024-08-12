@@ -1,0 +1,12 @@
+[
+    {
+        "name": "X Icon",
+        "image": "/socials/x.svg",
+        "link": "https://x.com/Kizunafi"
+    },
+    {
+        "name": "Telegram Icon",
+        "image": "/socials/telegram.svg",
+        "link": "https://t.me/Kizunafi"
+    }
+]
