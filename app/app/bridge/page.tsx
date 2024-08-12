@@ -441,7 +441,13 @@ export default function Home() {
                       </SelectContent>
                     </Select>
                     <input
-                      value={inputamountRef.current?.value}
+                      value={
+                        inputamountRef.current?.value
+                          ? parseFloat(inputamountRef.current?.value) -
+                            parseFloat(inputamountRef.current?.value) *
+                              (0.3 / 100)
+                          : 0
+                      }
                       type="number"
                       className="py-1.5 rounded-lg bg-transparent focus:outline-none text-right w-full text-2xl"
                       placeholder="0"
