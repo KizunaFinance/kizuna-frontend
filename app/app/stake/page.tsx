@@ -23,6 +23,7 @@ import { STAKING_HEKLA, STAKING_HOLESKY } from "@/app/utils/address";
 
 export default function Home() {
   const { address, isConnected, chain } = useAccount();
+  const [stakeProgress, setStakeProgress] = useState<boolean>(false);
 
   const balanceResult = useBalance({
     address: address!,
@@ -78,7 +79,6 @@ export default function Home() {
     }
   }
 
-
   return (
     <main className="flex flex-col items-center justify-center gap-12 mt-36  text-slate-200">
       <div className="flex flex-col items-center justify-center gap-6 max-w-xl w-full border-4 border-[#FF5D5D] rounded-xl px-8 pb-10 pt-6">
@@ -96,11 +96,11 @@ export default function Home() {
                     Balance:{" "}
                     {balanceResult.data
                       ? parseFloat(
-                        formatUnits(
-                          balanceResult.data.value,
-                          balanceResult.data.decimals
-                        )
-                      ).toFixed(6)
+                          formatUnits(
+                            balanceResult.data.value,
+                            balanceResult.data.decimals
+                          )
+                        ).toFixed(6)
                       : 0}
                   </div>
                   <button className="text-[#FF5D5D] font-bold">Max</button>
@@ -142,23 +142,31 @@ export default function Home() {
             </div>
           </div>
           <Button
+            disabled={stakeProgress}
             onClick={async () => {
+              setStakeProgress(true);
               const stakeResp = await stakeToken(
                 selectchain,
                 Number(inputAmount.current?.value),
                 address!
               );
+
               if (stakeResp.success) {
                 toast.success("Staked successfully");
               } else {
                 toast.error("Failed to stake");
               }
+              setStakeProgress(false);
             }}
             className="text-slate-800 w-full text-xl py-6 font-medium bg-[#FF5D5D] hover:bg-white"
           >
-            Stake
+            {stakeProgress ? "Staking..." : "Stake"}
           </Button>
         </div>
+      </div>
+      <div className="flex flex-col items-center justify-center gap-6 max-w-xl w-full text-slate-800 font-bold  bg-[#FF5D5D] rounded-xl px-6 py-4">
+        Disclaimer: This is a testnet and yet to be audited. Use at your own
+        risk. There is 7 days cooldown period for unstaking.
       </div>
     </main>
   );

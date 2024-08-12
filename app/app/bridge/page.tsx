@@ -3,8 +3,7 @@ import { Chains, config } from "@/app/providers/config";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { Options } from '@layerzerolabs/lz-v2-utilities';
-
+import { Options } from "@layerzerolabs/lz-v2-utilities";
 
 import {
   Select,
@@ -24,7 +23,15 @@ import { Address, formatEther, formatUnits } from "viem";
 import { bridgeToken, convertToBigInt } from "@/app/utils/bridge";
 import { switchChain } from "@wagmi/core";
 import Link from "next/link";
-import { Link2, LoaderCircleIcon, X, History, Undo2, Fuel } from "lucide-react";
+import {
+  Link2,
+  LoaderCircleIcon,
+  X,
+  History,
+  Undo2,
+  Fuel,
+  Rocket,
+} from "lucide-react";
 import { Message } from "@/app/utils/types";
 import { createClient } from "@layerzerolabs/scan-client";
 import { BridgeAbi } from "@/app/abi/brdigeABI";
@@ -51,7 +58,9 @@ export default function Home() {
   const HEKLA_V2_TESTNET = 40274;
   const HOLESKY_V2_TESTNET = 40217;
 
-  const options = Options.newOptions().addExecutorLzReceiveOption(600000, 2).toHex() as `0x${string}`
+  const options = Options.newOptions()
+    .addExecutorLzReceiveOption(600000, 2)
+    .toHex() as `0x${string}`;
 
   let { data: nativeFeeResult } = useReadContract({
     abi: BridgeAbi,
@@ -88,7 +97,14 @@ export default function Home() {
 
   const getGasFees = async (nativeFee: bigint) => {
     try {
-      if (!publicClient || !inputamountRef.current?.value || !address || !tokenIn || !tokenOut || !options) {
+      if (
+        !publicClient ||
+        !inputamountRef.current?.value ||
+        !address ||
+        !tokenIn ||
+        !tokenOut ||
+        !options
+      ) {
         return;
       }
       const tx = await publicClient.estimateContractGas({
@@ -160,7 +176,8 @@ export default function Home() {
         }, 60 * 1000);
       } else if (_message.status === "FAILED") {
         // await handleFailedMessage(txHash);
-      } 6
+      }
+      6;
     } catch (e) {
       setTimeout(() => {
         getTxpoolStatus(txHash);
@@ -177,7 +194,7 @@ export default function Home() {
   //       address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
   //       args: [
   //         tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET,
-  //         message.guid, 
+  //         message.guid,
   //         options,
   //       ],
   //     });
@@ -310,11 +327,11 @@ export default function Home() {
                         {holeskyBalanceResult.data && heklaBalanceResult.data
                           ? tokenIn.id === 17000
                             ? parseFloat(
-                              formatUnits(holeskyBalanceResult.data.value, 18)
-                            ).toFixed(6)
+                                formatUnits(holeskyBalanceResult.data.value, 18)
+                              ).toFixed(6)
                             : parseFloat(
-                              formatUnits(heklaBalanceResult.data.value, 18)
-                            ).toFixed(6)
+                                formatUnits(heklaBalanceResult.data.value, 18)
+                              ).toFixed(6)
                           : 0}
                       </div>
                       <button className="text-[#FF5D5D] font-bold">Max</button>
@@ -384,11 +401,11 @@ export default function Home() {
                         {holeskyBalanceResult.data && heklaBalanceResult.data
                           ? tokenOut.id === 17000
                             ? parseFloat(
-                              formatUnits(holeskyBalanceResult.data.value, 18)
-                            ).toFixed(6)
+                                formatUnits(holeskyBalanceResult.data.value, 18)
+                              ).toFixed(6)
                             : parseFloat(
-                              formatUnits(heklaBalanceResult.data.value, 18)
-                            ).toFixed(6)
+                                formatUnits(heklaBalanceResult.data.value, 18)
+                              ).toFixed(6)
                           : 0}
                       </div>
                     </div>
@@ -460,14 +477,31 @@ export default function Home() {
                 {tokenIn.id === chain?.id ? "Send" : "Wrong Network"}
               </Button>
               {parseFloat(gasFee) > 0 && (
-                <div className="flex justify-between items-center w-full mt-4 text-slate-200 rounded-lg px-6 py-2.5 bg-slate-700 font-medium text-sm">
-                  <div className="flex flex-row gap-1 justify-start items-center">
-                    <Fuel size={15} />
-                    <h6>Gas Fee</h6>
+                <div className="flex flex-col gap-2 divide-y divide-slate-200 justify-center items-center w-full mt-4 text-slate-200 rounded-lg px-6 py-2.5 bg-slate-700 font-medium text-sm">
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex flex-row gap-1 justify-start items-center">
+                      <Fuel size={15} />
+                      <h6>Gas Fee</h6>
+                    </div>
+                    <h6>
+                      ~ ${price ? (parseFloat(gasFee) * price).toFixed(2) : 0}
+                    </h6>
                   </div>
-                  <h6>
-                    ~ ${price ? (parseFloat(gasFee) * price).toFixed(2) : 0}
-                  </h6>
+                  <div className="flex justify-between items-center w-full pt-2">
+                    <div className="flex flex-row gap-1 justify-start items-center">
+                      <Rocket size={15} />
+                      <h6>Min Receivable</h6>
+                    </div>
+
+                    <h6>
+                      ~{" "}
+                      {inputamountRef.current?.value
+                        ? parseFloat(inputamountRef.current?.value) -
+                          parseFloat(inputamountRef.current?.value) *
+                            (0.3 / 100)
+                        : 0}
+                    </h6>
+                  </div>
                 </div>
               )}
             </div>
@@ -500,8 +534,9 @@ export default function Home() {
                 <Link
                   href={`${tokenIn.blockExplorers.default.url}/tx/${txHash}`}
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${txHash ? "flex" : "invisible"
-                    }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
+                    txHash ? "flex" : "invisible"
+                  }`}
                 >
                   <Link2 size={18} />
                   <h5>Explorer</h5>
@@ -510,7 +545,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-4 justify-center items-center pb-4">
               {TxStatus({ txStatus: message?.status || "INFLIGHT" })?.name ===
-                "In Progress" ? (
+              "In Progress" ? (
                 <LoaderCircleIcon
                   size={"40"}
                   className="text-[#FF5D5D] animate-spin"
@@ -528,8 +563,9 @@ export default function Home() {
                 />
               )}
               <div
-                className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
-                  }`}
+                className={`text-slate-200 px-2 py-1 rounded-full text-xs ${
+                  TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                }`}
               >
                 {
                   TxStatus({
@@ -546,8 +582,9 @@ export default function Home() {
                       : "#"
                   }
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${txHash ? "flex" : "invisible"
-                    }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
+                    txHash ? "flex" : "invisible"
+                  }`}
                 >
                   <Link2 size={18} />
                   <h5>LayerZero Scan</h5>
@@ -599,8 +636,9 @@ export default function Home() {
                 <Link
                   href={`${tokenOut.blockExplorers.default.url}/tx/${message?.dstTxHash}`}
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${message?.dstTxHash ? "flex" : "invisible"
-                    }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
+                    message?.dstTxHash ? "flex" : "invisible"
+                  }`}
                 >
                   <Link2 size={18} />
                   <h5>Explorer</h5>
@@ -610,6 +648,10 @@ export default function Home() {
           </div>
         </div>
       )}
+      <div className="flex flex-col items-center justify-center gap-6 max-w-xl w-full text-slate-800 font-bold  bg-[#FF5D5D] rounded-xl px-6 py-4">
+        Disclaimer: This is a testnet and yet to be audited. Use at your own
+        risk. There is 7 days cooldown period for unstaking.
+      </div>
     </div>
   );
 }

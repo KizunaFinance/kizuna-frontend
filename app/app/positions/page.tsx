@@ -6,7 +6,13 @@ import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { Address, Chain, formatUnits } from "viem";
 
 import { Chains, config } from "../../providers/config";
-import { getRecordID, getWithdrawDetails, unstakeToken, withdrawToken, getTimeLeftToWithdraw } from "../../utils/staking";
+import {
+  getRecordID,
+  getWithdrawDetails,
+  unstakeToken,
+  withdrawToken,
+  getTimeLeftToWithdraw,
+} from "../../utils/staking";
 import { stakingABI } from "../../abi/stakingABI";
 import Image from "next/image";
 import { STAKING_HEKLA, STAKING_HOLESKY } from "@/app/utils/address";
@@ -15,6 +21,7 @@ import { Bar, BarChart } from "recharts";
 import * as React from "react";
 import { formatTime } from "@/app/utils/utils";
 import { switchChain } from "@wagmi/core";
+import moment from "moment";
 
 export default function Home() {
   const { address, isConnected, chain } = useAccount();
@@ -24,8 +31,12 @@ export default function Home() {
   const [withdrawTimeHekla, setWithdrawTimeHekla] = useState<number>(0);
   const [isUnstakingHolesky, setIsUnstakingHolesky] = useState<boolean>(false);
   const [isUnstakingHekla, setIsUnstakingHekla] = useState<boolean>(false);
-  const [withDrawAmountHolesky, setWithDrawAmountHolesky] = useState<bigint>(BigInt(0));
-  const [withDrawAmountHekla, setWithDrawAmountHekla] = useState<bigint>(BigInt(0));
+  const [withDrawAmountHolesky, setWithDrawAmountHolesky] = useState<bigint>(
+    BigInt(0)
+  );
+  const [withDrawAmountHekla, setWithDrawAmountHekla] = useState<bigint>(
+    BigInt(0)
+  );
 
   useEffect(() => {
     if (chain?.id === 17000) {
@@ -44,7 +55,6 @@ export default function Home() {
     address: STAKING_HOLESKY,
     chainId: Chains[1].id,
   });
-
 
   const {
     data: holeskyBalance,
@@ -115,7 +125,7 @@ export default function Home() {
   useEffect(() => {
     if (withdrawTimeHolesky > 0) {
       const timer = setInterval(() => {
-        setWithdrawTimeHolesky(prevTime => prevTime - 1);
+        setWithdrawTimeHolesky((prevTime) => prevTime - 1);
       }, 1000);
 
       return () => clearInterval(timer);
@@ -124,7 +134,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-start justify-start gap-12 p-24 pt-16 text-slate-200">
-      <div className="w-full flex flex-col items-start justify-center gap-6">
+      {/* <div className="w-full flex flex-col items-start justify-center gap-6">
         <h1 className="text-3xl font-bold text-slate-200">Points Earned</h1>
         <div className="grid grid-cols-3 gap-4 w-full">
           <div className="text-slate-800 bg-[#FF5D5D] rounded-xl px-8 py-6 flex flex-col justify-start items-start gap-4">
@@ -152,7 +162,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="w-full flex flex-col items-start justify-center gap-6">
         <h1 className="text-3xl font-bold text-slate-200">
           Avaliable Liquidity
@@ -164,7 +174,9 @@ export default function Home() {
                 <h3 className=" text-xl font-medium">Ethereum</h3>
                 <h4 className="text-4xl font-bold">
                   {holeskyContractBalance.data
-                    ? formatUnits(holeskyContractBalance.data.value, 18)
+                    ? parseFloat(
+                        formatUnits(holeskyContractBalance.data.value, 18)
+                      ).toFixed(6)
                     : 0}{" "}
                   ETH
                 </h4>
@@ -195,7 +207,9 @@ export default function Home() {
                 <h3 className=" text-xl font-medium">Taiko</h3>
                 <h4 className="text-4xl font-bold">
                   {heklaContractBalance.data
-                    ? formatUnits(heklaContractBalance.data.value, 18)
+                    ? parseFloat(
+                        formatUnits(heklaContractBalance.data.value, 18)
+                      ).toFixed(6)
                     : 0}{" "}
                   ETH
                 </h4>
@@ -228,7 +242,15 @@ export default function Home() {
             <div className="flex flex-col gap-1">
               <h3 className="text-xl font-medium">Ethereum</h3>
               <h4 className="text-4xl font-bold w-max">
-                {formatUnits(holeskyBalance ? holeskyBalance : withDrawAmountHolesky ? withDrawAmountHolesky : BigInt("0"), 18)} ETH
+                {formatUnits(
+                  holeskyBalance
+                    ? holeskyBalance
+                    : withDrawAmountHolesky
+                    ? withDrawAmountHolesky
+                    : BigInt("0"),
+                  18
+                )}{" "}
+                ETH
               </h4>
             </div>
 
@@ -246,7 +268,9 @@ export default function Home() {
                 </div>
               ) : withdrawTimeHolesky !== null && withdrawTimeHolesky > 0 ? (
                 <div className="text-slate-800">
-                  <p>Time left to withdraw: {formatTime(withdrawTimeHolesky)}</p>
+                  <p>
+                    Unstake After: {moment(withdrawTimeHolesky).format("LLL")}
+                  </p>
                 </div>
               ) : (
                 <div className="rounded-full px-4 py-1.5 border border-slate-800 text-slate-800 hover:bg-slate-800 hover:text-[#FF5D5D]">
@@ -279,7 +303,15 @@ export default function Home() {
             <div className="flex flex-col gap-1">
               <h3 className="text-xl font-medium">Taiko</h3>
               <h4 className="text-4xl font-bold w-max">
-                {formatUnits(heklaBalance ? heklaBalance : withDrawAmountHekla ? withDrawAmountHekla : BigInt("0"), 18)} ETH
+                {formatUnits(
+                  heklaBalance
+                    ? heklaBalance
+                    : withDrawAmountHekla
+                    ? withDrawAmountHekla
+                    : BigInt("0"),
+                  18
+                )}{" "}
+                ETH
               </h4>
             </div>
 
