@@ -9,6 +9,7 @@ import { config } from "../providers/config";
 import { Chain } from "@rainbow-me/rainbowkit";
 import { BridgeAbi } from "../abi/brdigeABI";
 import { BRIDGE_HEKLA, BRIDGE_HOLESKY } from "./address";
+import { Options } from "@layerzerolabs/lz-v2-utilities";
 
 const HEKLA_V2_TESTNET = 40274;
 const HOLESKY_V2_TESTNET = 40217;
@@ -19,17 +20,17 @@ export const bridgeToken = async (
   userAddress: Address
 ) => {
   try {
-    let options: `0x${string}` =
-      "0x00030100110100000000000000000000000000030d40";
+    const options = Options.newOptions().addExecutorLzReceiveOption(600000, 2).toHex() as `0x${string}`
 
     let nativeFeeResult = await readContract(config, {
       abi: BridgeAbi,
       address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
-      functionName: "quote",
+      functionName: "quoteAmount",
       args: [
         tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET,
+        convertToBigInt(Number(amount), 18),
+        userAddress,
         options,
-        false,
       ],
     });
 
@@ -37,10 +38,10 @@ export const bridgeToken = async (
       abi: BridgeAbi,
       address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
       chain: tokenIn,
-      functionName: "send",
+      functionName: "sendAmount",
       args: [
         tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET,
-        nativeFeeResult.nativeFee,
+        convertToBigInt(Number(amount), 18),
         userAddress,
         options,
       ],

@@ -10,10 +10,30 @@ export const BridgeAbi = [
                 "internalType": "address",
                 "name": "_delegate",
                 "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_feesPercent",
+                "type": "uint256"
+            },
+            {
+                "internalType": "contract IStaking",
+                "name": "_ethVault",
+                "type": "address"
             }
         ],
         "stateMutability": "nonpayable",
         "type": "constructor"
+    },
+    {
+        "inputs": [],
+        "name": "EnforcedPause",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ExpectedPause",
+        "type": "error"
     },
     {
         "inputs": [],
@@ -102,6 +122,30 @@ export const BridgeAbi = [
         "type": "error"
     },
     {
+        "inputs": [],
+        "name": "ReentrancyGuardReentrantCall",
+        "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "FallbackCalled",
+        "type": "event"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -118,6 +162,19 @@ export const BridgeAbi = [
             }
         ],
         "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "Paused",
         "type": "event"
     },
     {
@@ -144,6 +201,25 @@ export const BridgeAbi = [
         "inputs": [
             {
                 "indexed": false,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "Received",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
                 "internalType": "uint256",
                 "name": "recvAmount",
                 "type": "uint256"
@@ -155,12 +231,207 @@ export const BridgeAbi = [
                 "type": "address"
             }
         ],
-        "name": "ReceiveEvent",
+        "name": "ReceivedAmount",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "guid",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "RefundedAmount",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "recvAddress",
+                "type": "address"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "bytes32",
+                        "name": "guid",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "nonce",
+                        "type": "uint64"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256",
+                                "name": "nativeFee",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "lzTokenFee",
+                                "type": "uint256"
+                            }
+                        ],
+                        "internalType": "struct MessagingFee",
+                        "name": "fee",
+                        "type": "tuple"
+                    }
+                ],
+                "indexed": false,
+                "internalType": "struct MessagingReceipt",
+                "name": "receipt",
+                "type": "tuple"
+            }
+        ],
+        "name": "SendAmount",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "bridgeFeesPercent",
+                "type": "uint256"
+            }
+        ],
+        "name": "SetBridgeFeesPercent",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "ethVault",
+                "type": "address"
+            }
+        ],
+        "name": "SetEthVaultAddress",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "Unpaused",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "WithdrawAdminFees",
         "type": "event"
     },
     {
         "stateMutability": "payable",
         "type": "fallback"
+    },
+    {
+        "inputs": [],
+        "name": "BRIDGE_TYPE_AMOUNT",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "BRIDGE_TYPE_UNRECIEVED",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "MIN_AMOUNT",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "adminAmount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
     },
     {
         "inputs": [
@@ -199,6 +470,43 @@ export const BridgeAbi = [
         "type": "function"
     },
     {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "",
+                "type": "bytes32"
+            }
+        ],
+        "name": "amountMap",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "bridgeFeesPercent",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [],
         "name": "endpoint",
         "outputs": [
@@ -216,7 +524,7 @@ export const BridgeAbi = [
         "name": "ethVault",
         "outputs": [
             {
-                "internalType": "contract iStaking",
+                "internalType": "contract IStaking",
                 "name": "",
                 "type": "address"
             }
@@ -376,6 +684,26 @@ export const BridgeAbi = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "pause",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "paused",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint32",
@@ -402,17 +730,63 @@ export const BridgeAbi = [
                 "type": "uint32"
             },
             {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "recvAddress",
+                "type": "address"
+            },
+            {
                 "internalType": "bytes",
                 "name": "_options",
                 "type": "bytes"
-            },
-            {
-                "internalType": "bool",
-                "name": "_payInLzToken",
-                "type": "bool"
             }
         ],
-        "name": "quote",
+        "name": "quoteAmount",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "nativeFee",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "lzTokenFee",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct MessagingFee",
+                "name": "fee",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint32",
+                "name": "_dstEid",
+                "type": "uint32"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "guid",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_options",
+                "type": "bytes"
+            }
+        ],
+        "name": "quoteUnrecieved",
         "outputs": [
             {
                 "components": [
@@ -465,7 +839,7 @@ export const BridgeAbi = [
                 "type": "bytes"
             }
         ],
-        "name": "send",
+        "name": "sendAmount",
         "outputs": [
             {
                 "components": [
@@ -508,6 +882,77 @@ export const BridgeAbi = [
     {
         "inputs": [
             {
+                "internalType": "uint32",
+                "name": "_dstEid",
+                "type": "uint32"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "guid",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_options",
+                "type": "bytes"
+            }
+        ],
+        "name": "sendUnrecieved",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "bytes32",
+                        "name": "guid",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "nonce",
+                        "type": "uint64"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256",
+                                "name": "nativeFee",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "lzTokenFee",
+                                "type": "uint256"
+                            }
+                        ],
+                        "internalType": "struct MessagingFee",
+                        "name": "fee",
+                        "type": "tuple"
+                    }
+                ],
+                "internalType": "struct MessagingReceipt",
+                "name": "receipt",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_feesPercent",
+                "type": "uint256"
+            }
+        ],
+        "name": "setBridgeFeesPercent",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "_delegate",
                 "type": "address"
@@ -522,7 +967,7 @@ export const BridgeAbi = [
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_ethVaultAddress",
+                "name": "_ethVault",
                 "type": "address"
             }
         ],
@@ -558,6 +1003,26 @@ export const BridgeAbi = [
             }
         ],
         "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "unpause",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address payable",
+                "name": "to",
+                "type": "address"
+            }
+        ],
+        "name": "withdrawAdminFees",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

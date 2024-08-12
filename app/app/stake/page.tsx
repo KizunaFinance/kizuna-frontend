@@ -44,10 +44,8 @@ export default function Home() {
 
   useEffect(() => {
     if (chain?.id === 17000) {
-      setChecked(true);
       setSelectchain(Chains[1]);
     } else {
-      setChecked(false);
       setSelectchain(Chains[0]);
     }
   }, [chain]);
@@ -80,7 +78,6 @@ export default function Home() {
     }
   }
 
-  const [checked, setChecked] = useState(false);
 
   return (
     <main className="flex flex-col items-center justify-center gap-12 mt-36  text-slate-200">
@@ -99,11 +96,11 @@ export default function Home() {
                     Balance:{" "}
                     {balanceResult.data
                       ? parseFloat(
-                          formatUnits(
-                            balanceResult.data.value,
-                            balanceResult.data.decimals
-                          )
-                        ).toFixed(6)
+                        formatUnits(
+                          balanceResult.data.value,
+                          balanceResult.data.decimals
+                        )
+                      ).toFixed(6)
                       : 0}
                   </div>
                   <button className="text-[#FF5D5D] font-bold">Max</button>

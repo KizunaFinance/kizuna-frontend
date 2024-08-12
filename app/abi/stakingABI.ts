@@ -27,6 +27,16 @@ export const stakingABI = [
     },
     {
         "inputs": [],
+        "name": "EnforcedPause",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ExpectedPause",
+        "type": "error"
+    },
+    {
+        "inputs": [],
         "name": "ReentrancyGuardReentrantCall",
         "type": "error"
     },
@@ -47,6 +57,19 @@ export const stakingABI = [
             }
         ],
         "name": "LiquidityTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "Paused",
         "type": "event"
     },
     {
@@ -128,6 +151,32 @@ export const stakingABI = [
         "anonymous": false,
         "inputs": [
             {
+                "indexed": false,
+                "internalType": "address",
+                "name": "_newManager",
+                "type": "address"
+            }
+        ],
+        "name": "SetLiquidityManager",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "contract IStakingBridge",
+                "name": "_stakingBridge",
+                "type": "address"
+            }
+        ],
+        "name": "SetStakingBridge",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
                 "indexed": true,
                 "internalType": "address",
                 "name": "user",
@@ -141,6 +190,19 @@ export const stakingABI = [
             }
         ],
         "name": "Staked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "Unpaused",
         "type": "event"
     },
     {
@@ -162,6 +224,12 @@ export const stakingABI = [
                 "indexed": false,
                 "internalType": "uint256",
                 "name": "timestamp",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "recordID",
                 "type": "uint256"
             }
         ],
@@ -185,6 +253,37 @@ export const stakingABI = [
             }
         ],
         "name": "Withdrawn",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint32",
+                "name": "dstEid",
+                "type": "uint32"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "recvAddress",
+                "type": "address"
+            }
+        ],
+        "name": "WithdrawnByBridge",
         "type": "event"
     },
     {
@@ -215,6 +314,19 @@ export const stakingABI = [
     },
     {
         "inputs": [],
+        "name": "LAST_CLAIM_ID",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "LIQUIDITY_MANAGER_ROLE",
         "outputs": [
             {
@@ -227,16 +339,29 @@ export const stakingABI = [
         "type": "function"
     },
     {
-        "inputs": [
+        "inputs": [],
+        "name": "StakingBridge",
+        "outputs": [
             {
-                "internalType": "address",
-                "name": "newManager",
+                "internalType": "contract IStakingBridge",
+                "name": "",
                 "type": "address"
             }
         ],
-        "name": "changeLiquidityManager",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "fund",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "success",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "payable",
         "type": "function"
     },
     {
@@ -253,6 +378,25 @@ export const stakingABI = [
                 "internalType": "bytes32",
                 "name": "",
                 "type": "bytes32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "getUserClaims",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
             }
         ],
         "stateMutability": "view",
@@ -301,6 +445,26 @@ export const stakingABI = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "pause",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "paused",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "bytes32",
@@ -332,6 +496,32 @@ export const stakingABI = [
             }
         ],
         "name": "revokeRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_newManager",
+                "type": "address"
+            }
+        ],
+        "name": "setLiquidityManager",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "contract IStakingBridge",
+                "name": "_stakingBridge",
+                "type": "address"
+            }
+        ],
+        "name": "setStakingBridge",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -400,6 +590,13 @@ export const stakingABI = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "unpause",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -418,9 +615,14 @@ export const stakingABI = [
                 "internalType": "address",
                 "name": "",
                 "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
-        "name": "unstakeTimestamps",
+        "name": "userClaims",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -435,7 +637,7 @@ export const stakingABI = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "_amount",
+                "name": "recordID",
                 "type": "uint256"
             }
         ],
@@ -443,5 +645,66 @@ export const stakingABI = [
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "recordID",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint32",
+                "name": "_dstEid",
+                "type": "uint32"
+            },
+            {
+                "internalType": "address",
+                "name": "recvAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "bytes",
+                "name": "_options",
+                "type": "bytes"
+            }
+        ],
+        "name": "withdrawByBridge",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdrawClaims",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "withdrawer",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "stateMutability": "payable",
+        "type": "receive"
     }
 ] as const;

@@ -3,6 +3,9 @@ import { Chains, config } from "@/app/providers/config";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { Options } from '@layerzerolabs/lz-v2-utilities';
+
+
 import {
   Select,
   SelectContent,
@@ -17,7 +20,7 @@ import {
   useReadContract,
   usePublicClient,
 } from "wagmi";
-import { formatEther, formatUnits } from "viem";
+import { Address, formatEther, formatUnits } from "viem";
 import { bridgeToken, convertToBigInt } from "@/app/utils/bridge";
 import { switchChain } from "@wagmi/core";
 import Link from "next/link";
@@ -48,16 +51,17 @@ export default function Home() {
   const HEKLA_V2_TESTNET = 40274;
   const HOLESKY_V2_TESTNET = 40217;
 
-  let options: `0x${string}` = "0x00030100110100000000000000000000000000030d40";
+  const options = Options.newOptions().addExecutorLzReceiveOption(600000, 2).toHex() as `0x${string}`
 
   let { data: nativeFeeResult } = useReadContract({
     abi: BridgeAbi,
     address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
-    functionName: "quote",
+    functionName: "quoteAmount",
     args: [
       tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET,
+      convertToBigInt(Number(inputamountRef.current?.value || "0"), 18),
+      address!,
       options,
-      false,
     ],
   });
 
@@ -77,31 +81,35 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    console.log("useEffect called");
     if (nativeFeeResult?.nativeFee && inputamountRef.current?.value) {
       getGasFees(nativeFeeResult.nativeFee);
     }
   }, [nativeFeeResult, amountIn]);
 
   const getGasFees = async (nativeFee: bigint) => {
-    if (!publicClient || !inputamountRef.current?.value) {
-      return;
+    try {
+      if (!publicClient || !inputamountRef.current?.value || !address || !tokenIn || !tokenOut || !options) {
+        return;
+      }
+      const tx = await publicClient.estimateContractGas({
+        abi: BridgeAbi,
+        functionName: "sendAmount",
+        address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
+        args: [
+          tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET,
+          nativeFee,
+          address!,
+          options,
+        ],
+        value:
+          convertToBigInt(Number(inputamountRef.current?.value || "0"), 18) +
+          nativeFee,
+      });
+      console.log(tx);
+      setGasFee(formatEther(tx + nativeFee));
+    } catch (e) {
+      console.log(e);
     }
-    const tx = await publicClient.estimateContractGas({
-      abi: BridgeAbi,
-      functionName: "send",
-      address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
-      args: [
-        tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET,
-        nativeFee,
-        address!,
-        options,
-      ],
-      value:
-        convertToBigInt(Number(inputamountRef.current?.value || "0"), 18) +
-        nativeFee,
-    });
-    setGasFee(formatEther(tx + nativeFee));
   };
 
   const holeskyBalanceResult = useBalance({
@@ -117,11 +125,14 @@ export default function Home() {
   async function handleSelectTokenChange(e: string) {
     const chainID = parseInt(e);
     if (chainID === tokenIn.id || chainID === tokenOut.id) {
-      const a = tokenIn;
-      const b = tokenOut;
-      setTokenIn(b);
-      setTokenOut(a);
-      await _switchChain(tokenIn.id === 17000);
+      const res = await _switchChain(tokenIn.id === 17000);
+      console.log(res);
+      if (res.success) {
+        const a = tokenIn;
+        const b = tokenOut;
+        setTokenIn(b);
+        setTokenOut(a);
+      }
     }
   }
 
@@ -147,13 +158,33 @@ export default function Home() {
         setTimeout(() => {
           getTxpoolStatus(txHash);
         }, 60 * 1000);
-      }
+      } else if (_message.status === "FAILED") {
+        // await handleFailedMessage(txHash);
+      } 6
     } catch (e) {
       setTimeout(() => {
         getTxpoolStatus(txHash);
       }, 60 * 1000);
     }
   };
+
+  // const handleFailedMessage = async (hash:string) => {
+
+  //   try {
+  //     await publicClient.writeContract({
+  //       abi: BridgeAbi,
+  //       functionName: "sendUnrecieved",
+  //       address: tokenIn.id === 17000 ? BRIDGE_HOLESKY : BRIDGE_HEKLA,
+  //       args: [
+  //         tokenIn.id === 17000 ? HEKLA_V2_TESTNET : HOLESKY_V2_TESTNET,
+  //         message.guid, 
+  //         options,
+  //       ],
+  //     });
+  //   } catch (e) {
+  //     console.error("Failed to resend unreceived message:", e);
+  //   }
+  // };
 
   useEffect(() => {
     if (chain?.id === 17000) {
@@ -279,11 +310,11 @@ export default function Home() {
                         {holeskyBalanceResult.data && heklaBalanceResult.data
                           ? tokenIn.id === 17000
                             ? parseFloat(
-                                formatUnits(holeskyBalanceResult.data.value, 18)
-                              ).toFixed(6)
+                              formatUnits(holeskyBalanceResult.data.value, 18)
+                            ).toFixed(6)
                             : parseFloat(
-                                formatUnits(heklaBalanceResult.data.value, 18)
-                              ).toFixed(6)
+                              formatUnits(heklaBalanceResult.data.value, 18)
+                            ).toFixed(6)
                           : 0}
                       </div>
                       <button className="text-[#FF5D5D] font-bold">Max</button>
@@ -322,11 +353,13 @@ export default function Home() {
                     <input
                       type="number"
                       ref={inputamountRef}
+                      min={0.001}
+                      max={2}
                       onChange={(e) => {
                         setAmountIn(e.target.value);
                       }}
                       className="py-1.5 rounded-lg bg-transparent focus:outline-none text-right w-full text-2xl"
-                      placeholder="0.001 - 0.5"
+                      placeholder="0.001 - 2"
                     />
                   </div>
                 </div>
@@ -351,11 +384,11 @@ export default function Home() {
                         {holeskyBalanceResult.data && heklaBalanceResult.data
                           ? tokenOut.id === 17000
                             ? parseFloat(
-                                formatUnits(holeskyBalanceResult.data.value, 18)
-                              ).toFixed(6)
+                              formatUnits(holeskyBalanceResult.data.value, 18)
+                            ).toFixed(6)
                             : parseFloat(
-                                formatUnits(heklaBalanceResult.data.value, 18)
-                              ).toFixed(6)
+                              formatUnits(heklaBalanceResult.data.value, 18)
+                            ).toFixed(6)
                           : 0}
                       </div>
                     </div>
@@ -467,9 +500,8 @@ export default function Home() {
                 <Link
                   href={`${tokenIn.blockExplorers.default.url}/tx/${txHash}`}
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
-                    txHash ? "flex" : "invisible"
-                  }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${txHash ? "flex" : "invisible"
+                    }`}
                 >
                   <Link2 size={18} />
                   <h5>Explorer</h5>
@@ -478,7 +510,7 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-4 justify-center items-center pb-4">
               {TxStatus({ txStatus: message?.status || "INFLIGHT" })?.name ===
-              "In Progress" ? (
+                "In Progress" ? (
                 <LoaderCircleIcon
                   size={"40"}
                   className="text-[#FF5D5D] animate-spin"
@@ -496,9 +528,8 @@ export default function Home() {
                 />
               )}
               <div
-                className={`text-slate-200 px-2 py-1 rounded-full text-xs ${
-                  TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
-                }`}
+                className={`text-slate-200 px-2 py-1 rounded-full text-xs ${TxStatus({ txStatus: message?.status || "INFLIGHT" })?.bg
+                  }`}
               >
                 {
                   TxStatus({
@@ -515,9 +546,8 @@ export default function Home() {
                       : "#"
                   }
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
-                    txHash ? "flex" : "invisible"
-                  }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${txHash ? "flex" : "invisible"
+                    }`}
                 >
                   <Link2 size={18} />
                   <h5>LayerZero Scan</h5>
@@ -569,9 +599,8 @@ export default function Home() {
                 <Link
                   href={`${tokenOut.blockExplorers.default.url}/tx/${message?.dstTxHash}`}
                   target="_blank"
-                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${
-                    message?.dstTxHash ? "flex" : "invisible"
-                  }`}
+                  className={`flex flex-row justify-center items-center gap-1 text-sm text-[#FF5D5D] ${message?.dstTxHash ? "flex" : "invisible"
+                    }`}
                 >
                   <Link2 size={18} />
                   <h5>Explorer</h5>
