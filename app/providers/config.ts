@@ -50,7 +50,7 @@ export const Chains = [hekla, holesky];
 
 export const config = getDefaultConfig({
   appName: "My RainbowKit App",
-  projectId: "YOUR_PROJECT_ID",
+  projectId: "9872212bffbbb924a14f597794fab3dc",
   chains: [hekla, holesky],
   ssr: true,
 });
